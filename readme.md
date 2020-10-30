@@ -10,7 +10,7 @@
 <script>    
     $(document).ready(function (){
         $.ajax({
-            url: 'https://raw.githubusercontent.com/kolei/edanarayone/master/js/kalyan.js',
+            url: 'https://raw.githubusercontent.com/kolei/edanarayone/master/js/enr.js',
             crossDomain: true,
             cache: false, 
             type: 'GET'
