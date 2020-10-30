@@ -263,7 +263,7 @@ $(document).ready(function ()
     var elementWatchers = [];
 
     window.BRAND_CODE = '100000012';
-    if(window.location.hostname == 'edanarayone-prod.ru'){
+    if(window.location.hostname == 'edanarayone.ru'){
         // отдельный проект, свой id формы
         tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
