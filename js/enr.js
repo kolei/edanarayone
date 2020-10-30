@@ -232,7 +232,7 @@ $(document).ready(function ()
     var elementWatchers = [];
 
     window.BRAND_CODE = '100000012';
-    if(window.location.hostname == 'kalyandostavka-prod.ru'){
+    if(window.location.hostname == 'edanarayone.ru'){
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
         DEV_MODE = false;
     }
