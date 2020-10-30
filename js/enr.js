@@ -1,6 +1,6 @@
-window.script_version = 5;
-const tilda_form_id = 'form199889435';
-var   DEV_MODE = true;
+window.script_version = 6;
+var tilda_form_id = 'form199889435';
+var DEV_MODE = true;
 
 class UserData {
     props = {
@@ -233,6 +233,8 @@ $(document).ready(function ()
 
     window.BRAND_CODE = '100000012';
     if(window.location.hostname == 'edanarayone.ru'){
+        // отдельный проект, свой id формы
+        tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
         DEV_MODE = false;
     }
