@@ -1,4 +1,4 @@
-window.script_version = 10;
+window.script_version = 11;
 var tilda_form_id = 'form226638292'; //'form199889435';
 var DEV_MODE = true;
 
@@ -9,7 +9,7 @@ class UserData {
             return decodeURIComponent( this._name );
         },
         set name(value){
-            if(this._name != value){
+            if(typeof value != 'undefined' && this._name != value){
                 this._name = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='name']`).val(this.name);
                 document.cookie = `name=${this._name}; max-age=31536000`;
@@ -20,7 +20,7 @@ class UserData {
             return decodeURIComponent( this._phone );
         },
         set phone(value){
-            if(this._phone != value){
+            if(typeof value != 'undefined' && this._phone != value){
                 this._phone = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='phone']`).val(this.phone);
                 document.cookie = `phone=${this._phone}; max-age=31536000`;
@@ -31,7 +31,7 @@ class UserData {
             return decodeURIComponent( this._street ); 
         },
         set street(value){
-            if(this._street != value){
+            if(typeof value != 'undefined' && this._street != value){
                 this._street = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='street']`).val(this.street);
                 //document.cookie = `street=${this._street}; max-age=31536000`;
@@ -42,7 +42,7 @@ class UserData {
             return decodeURIComponent( this._flat );
         },
         set flat(value){
-            if(this._flat != value){
+            if(typeof value != 'undefined' && this._flat != value){
                 this._flat = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='flat']`).val(this.flat);
                 document.cookie = `flat=${this._flat}; max-age=31536000`;
@@ -53,7 +53,7 @@ class UserData {
             return decodeURIComponent( this._pass );
         },
         set pass(value){
-            if(this._pass != value){
+            if(typeof value != 'undefined' && this._pass != value){
                 this._pass = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='pass']`).val(this.pass);
                 document.cookie = `pass=${this._pass}; max-age=31536000`;
@@ -64,7 +64,7 @@ class UserData {
             return decodeURIComponent( this._floor );
         },
         set floor(value){
-            if(this._floor != value){
+            if(typeof value != 'undefined' && this._floor != value){
                 this._floor = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='floor']`).val(this.floor);
                 document.cookie = `floor=${this._floor}; max-age=31536000`;
@@ -75,7 +75,7 @@ class UserData {
             return this._jsonAddress;
         },
         set jsonAddress(value){
-            if(this._jsonAddress != value){
+            if(typeof value != 'undefined' && this._jsonAddress != value){
                 //console.log('adsress %s', value ? JSON.stringify(value) : 'invalid');
                 this._jsonAddress = value;
             }
@@ -85,7 +85,7 @@ class UserData {
             return decodeURIComponent( this._suggestedAdres );
         },
         set suggestedAdres(value){
-            if(value != this._suggestedAdres){
+            if(typeof value != 'undefined' && value != this._suggestedAdres){
                 this._suggestedAdres = encodeURIComponent( value.trim() );
                 document.cookie = `suggestedAdres=${this._suggestedAdres}; max-age=31536000`;
             }
