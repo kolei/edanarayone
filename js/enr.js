@@ -1,4 +1,4 @@
-window.script_version = 9;
+window.script_version = 10;
 var tilda_form_id = 'form226638292'; //'form199889435';
 var DEV_MODE = true;
 
@@ -269,8 +269,10 @@ $(document).ready(function ()
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
         DEV_MODE = false;
     }
-    else if(window.location.hostname == 'enr.kei.ru')
+    else if(window.location.hostname == 'enr.kei.ru'){
         window.CHAIHONA_HOST = 'https://kei.chaihona1.ru';
+        tilda_form_id = 'form199889435';
+    }
     else 
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru';
 
@@ -278,9 +280,13 @@ $(document).ready(function ()
 
     DEV_MODE && console.log('PATH=%s', window.location.pathname);
 
-    var ud = null;
+    var ud = null
+    var deliveryDays = []
+    var selectedDeliveryDay = null
+    var deliveryByWeekObj = null
+    var selectedDeliveryTime = null
 
-    var errorSet = new Set();
+    var errorSet = new Set()
 
     if(window.location.pathname == '/' || window.location.pathname == '/eda') processRoot();
     else if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess();
@@ -328,6 +334,9 @@ $(document).ready(function ()
         // очищаю время доставки
         $("select[name='time']").empty();
 
+        // и дату
+        $("select[name='time_2']").empty();
+
         //01.10.2020 в поле телефон плейсхолдер +7(999)999-99-99, при фокусе автоматически вставлять +7
         ud.el('phone').attr('placeholder', '+7(999)999-99-99');
         ud.el('phone').focus(function(){
@@ -339,9 +348,15 @@ $(document).ready(function ()
         let styleTag = $('<style>ul.ui-autocomplete { z-index: 999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
         $('html > head').append(styleTag);
 
-        //01.10.2020 дефолтное время доставки (кальян в одном ресторане)
-        //TODO при повторных вызовах проверять текущее значение
-        setDeliveryTime('11:00-05:00', 100);
+        setDeliveryTimeByWeek({
+            "mon": "11:00-03:30",
+            "tue": "11:00-03:30",
+            "wed": "11:00-03:30",
+            "thu": "11:00-03:30",
+            "fri": "11:00-03:30",
+            "sat": "11:00-03:30",
+            "sun": "11:00-03:30"
+        }, 60);
 
         // рисуем аналогичную кнопку для перехода на оплату в чайхону   
         $(`#${tilda_form_id} div.t-form__inputsbox`).append(`
@@ -381,6 +396,14 @@ $(document).ready(function ()
             else $('#chaihona_pay button').text('Оплатить');
         });
 
+        $("select[name='time']").change(function(){
+            onTimeChange()
+        })
+
+        $("select[name='time_2']").change(function(){
+            onDateChange()
+        })
+        
         // скрываю блок со SKU, мне он нужен для идентификации блюд, но дизайнеру не нравится
         new ClassWatcher(
             document.getElementsByClassName('t706__cartwin')[0], 
@@ -414,7 +437,8 @@ $(document).ready(function ()
 
             hideAllErrors();
             hideBottomError('js-rule-error-all');
-            
+            hideBottomError('js-rule-error-string');
+
             let firstErrorElement = null;
 
             if(ud.props.jsonAddress && !ud.props.jsonAddress.house){
@@ -480,6 +504,9 @@ $(document).ready(function ()
                 <input type="hidden" name="total" value="${total_price}"/>
                 <input type="hidden" name="payment" value="${payment}"/>
                 <input type="hidden" name="delivery_time" value="${delivery_time}"/>
+                <input type="hidden" name="lat" value="${ud.props.jsonAddress.lat}"/>
+                <input type="hidden" name="lon" value="${ud.props.jsonAddress.lon}"/>
+                <input type="hidden" name="fullAddress" value="${ud.props.jsonAddress.fullAddress}"/>
                 <input type="hidden" name="brand" value="${window.BRAND_CODE}"/>`;
 
             $("div.t706__product").each(function(){
@@ -639,17 +666,24 @@ $(document).ready(function ()
         let geoObject = gc.geoObjects.get(0);
 
         if (geoObject && geoObject.getCountryCode() == "RU") {
-            let city = geoObject.getLocalities()[0] || geoObject.getAdministrativeAreas()[0];
-            let street = geoObject.getThoroughfare() || geoObject.getLocalities()[0];
+            let city = geoObject.getLocalities()[0] || geoObject.getAdministrativeAreas()[0]
+            let street = geoObject.getThoroughfare() || geoObject.getLocalities()[0]
             if(city == street && city != 'Зеленоград')
-                street = geoObject.getLocalities()[2];
+                street = geoObject.getLocalities()[2]
             
             let jsonData = {
                 'city': city,
                 'street': street ? street : '',
                 'house': geoObject.getPremiseNumber() || getCustomHouse(value),
+                'fullAddress':  geoObject.getAddressLine()
             };
 
+            let coordinates = geoObject.geometry.getCoordinates();
+            if (Array.isArray(coordinates) && coordinates.length > 1) {
+              jsonData.lat = coordinates[0]
+              jsonData.lon = coordinates[1]
+            }
+    
             value = value.replace(geoObject.getCountry()+", ", "");
             value = value.replace(geoObject.getAdministrativeAreas()[0]+", ", "");
             value = value.replace("undefined", "");
@@ -667,10 +701,10 @@ $(document).ready(function ()
     function pad(n){ return ('00' + n).slice(-2); }
 
     // функция проверки адреса
-    async function checkAdress()
+    async function checkAdress(force = false)
     {
         let address = ud.el('street').val();
-        if(ud.props.suggestedAdres == address && ud.props.jsonAddress && ud.props.department){
+        if(!force && ud.props.suggestedAdres == address && ud.props.jsonAddress && ud.props.department){
             DEV_MODE && console.log('адрес остался прежним, проверку не запускаю (1)');
             return;
         }
@@ -703,58 +737,63 @@ $(document).ready(function ()
         // если поля заполнены 
         if (ud.props.jsonAddress) {
 
-                let data = {
-                    city: ud.props.jsonAddress.city,
-                    street: ud.props.jsonAddress.street, 
-                    house: ud.props.jsonAddress.house,
-                    brand: window.BRAND_CODE
-                };
+            let doc_date = $("select[name='time']").val()
 
-                // перед новым запросом гашу старую ошибку
-                ud.el('street').parent().find('div.t-input-error').hide();
-                
-                // запрашиваем возможность доставки у АПИ
-                $.ajax({
-                    url: `${window.CHAIHONA_HOST}/eda-na-raione`,
-                    type: 'GET',
-                    crossDomain: true,
-                    data
-                }).done(function(rawData){
-                    DEV_MODE && console.log(rawData);
-                    let data = JSON.parse( rawData );
-                    let chaihona_pay = $('#chaihona_pay');
-                    if(data.error){
-                        chaihona_pay.attr('allow_pay', 'false');
-                        // реальную ошибку пишу в консоль, на экран всегда одну...
-                        console.log(data.error);
-                        showError(ud.el('street'), 'К сожалению, мы не доставляем по указанному адресу', 'js-rule-error-minlength');
-                    }
-                    else if(data.message){
-                        hideBottomError('js-rule-error-string');
+            let data = {
+                city: ud.props.jsonAddress.city,
+                street: ud.props.jsonAddress.street, 
+                house: ud.props.jsonAddress.house,
+                brand: window.BRAND_CODE,
+                fullAddress: ud.props.jsonAddress.fullAddress,
+                lat: ud.props.jsonAddress.lat,
+                lon: ud.props.jsonAddress.lon,
+                doc_date
+            };
 
+            // перед новым запросом гашу старую ошибку
+            ud.el('street').parent().find('div.t-input-error').hide();
+            
+            // запрашиваем возможность доставки у АПИ
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
+                type: 'GET',
+                crossDomain: true,
+                data
+            }).done(function(rawData){
+                //DEV_MODE && console.log(rawData);
+                let data = JSON.parse( rawData );
+                let chaihona_pay = $('#chaihona_pay');
+                if(data.error){
+                    chaihona_pay.attr('allow_pay', 'false');
+                    // реальную ошибку пишу в консоль, на экран всегда одну...
+                    console.log(data.error);
+                    showError(ud.el('street'), 'К сожалению, сейчас мы не доставляем по указанному адресу', 'js-rule-error-minlength');
+                }
+                else if(data.message){
+                    hideBottomError('js-rule-error-string');
 
+                    //TODO где-то вписать сумму доставки
+                    // формирую выпадающий список "доставить к"
+                    work_time = data.work_time ? data.work_time : '11:00-05:00'
 
-                        //TODO где-то вписать сумму доставки
-                        // формирую выпадающий список "доставить к"
-                        if(data.work_time){ 
-                            setDeliveryTime(data.work_time, parseInt(data.delivery_time));
+                    if(data.week_days){ 
+                        setDeliveryTimeByWeek(data.week_days, parseInt(data.delivery_time));
 
-                            // показываю СВОЮ кнопку "оплатить"
-                            chaihona_pay.attr('allow_pay', 'true');
-                            if(!data.online_payment){
-                                $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true);
-                                $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
-                            
-                                showBottomError('Обслуживающий ресторан не поддерживает онлайн-оплату', 'js-rule-error-string');
-                            }
-                            ud.props.department = data.department;
+                        // показываю СВОЮ кнопку "оплатить"
+                        chaihona_pay.attr('allow_pay', 'true');
+                        if(!data.online_payment){
+                            $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true);
+                            $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
+                        
+                            showBottomError('Обслуживающий ресторан не поддерживает онлайн-оплату', 'js-rule-error-string');
                         }
-                        else{
-                            showBottomError('В ответе сервера нет времени работы ресторана', 'js-rule-error-string');
-                        }
+                        ud.props.department = data.department;
                     }
-                });
-            // }
+                    else{
+                        showBottomError('В ответе сервера нет времени работы ресторана', 'js-rule-error-string');
+                    }
+                }
+            });
         }
     }
 
@@ -811,73 +850,167 @@ $(document).ready(function ()
         });
     }
 
-    function setDeliveryTime(work_time, delivery_time){
-        let select = $("select[name='time']");
+    /**
+     * Формирую массив дней (+30)
+     * 
+     * @param {int} [count]
+     */
+    function getDeliveryDays(count = 30){
+        let res = []
+        let nextDate = new Date()
+        let select = $("select[name='time_2']")
+
         if(select){
-            select.empty();
+            select.empty()
 
-            let date = new Date();
-            let tomorrow = (new Date()).setDate( date.getDate()+1 );
-
-            let y = new Intl.DateTimeFormat('ru', { year: 'numeric' }).format(date);
-            let m = new Intl.DateTimeFormat('ru', { month: '2-digit' }).format(date);
-            let d = new Intl.DateTimeFormat('ru', { day: '2-digit' }).format(date);
-
-            let date_str = `${d}.${m}.${y}`;
-
-            y = new Intl.DateTimeFormat('ru', { year: 'numeric' }).format(tomorrow);
-            m = new Intl.DateTimeFormat('ru', { month: '2-digit' }).format(tomorrow);
-            d = new Intl.DateTimeFormat('ru', { day: '2-digit' }).format(tomorrow);
-
-            let tomorrow_str = `${d}.${m}.${y}`;
-
-            let match = work_time.match(/(\d+):(\d+)-(\d+):(\d+)/);
+            for (let i = 1; i < count; i++) {
+            let y = new Intl.DateTimeFormat('ru', { year: 'numeric' }).format(nextDate);
+            let m = new Intl.DateTimeFormat('ru', { month: '2-digit' }).format(nextDate);
+            let d = new Intl.DateTimeFormat('ru', { day: '2-digit' }).format(nextDate);
+    
+            let number = new Intl.DateTimeFormat('ru', { day: 'numeric' }).format(nextDate);
+            let month = new Intl.DateTimeFormat('ru', { month: 'long' }).format(nextDate);
+            let weekDay = new Intl.DateTimeFormat('ru', { weekday: 'long' }).format(nextDate);
             
+            // отображаемое значение селекта
+            let showDate = res.length==0 ? 'Сегодня' : `${number} ${month}, ${weekDay}`;
+    
+            // значения формирую в ISO, чтобы потом парсером разобрало верно
+            let id = `${y}-${m}-${d}T12:00:00.000Z`
+    
+            res.push( {
+                name: showDate, 
+                id: id //`${nextDate.toISOString()}`
+            } );
+    
+            select.append(new Option(showDate, id, false, id==selectedDeliveryDay))
+
+            // прибавляется день
+            nextDate.setDate( nextDate.getDate()+1 )
+            }
+        }
+
+        return res
+    }
+
+    function getWorkTime(){
+        // возвращает рабочее время для выбранной даты дд.мм.гггг
+        if(deliveryByWeekObj && selectedDeliveryDay){
+          // есть информация по дням недели
+          // console.log( 'formDeliveryDay = '+this.formDeliveryDay )
+  
+          let date = new Date(selectedDeliveryDay)
+  
+          switch (date.getDay()) {
+            case 0:
+              return deliveryByWeekObj.sun
+            case 1:
+              return deliveryByWeekObj.mon
+            case 2:
+              return deliveryByWeekObj.tue
+            case 3:
+              return deliveryByWeekObj.wed
+            case 4:
+              return deliveryByWeekObj.thu
+            case 5:
+              return deliveryByWeekObj.fri
+            case 6:
+              return deliveryByWeekObj.sat
+            default:
+              return '11:00-05:00'
+          }
+        }
+        else
+          return work_time ? work_time : '11:00-05:00'
+    }
+  
+
+    function setDeliveryTimeByWeek(week_days, delivery_time){
+        deliveryByWeekObj = week_days
+        let select = $("select[name='time']")
+        if(select){
+            select.empty()
+    
+            deliveryDays = getDeliveryDays()
+
+            if(!selectedDeliveryDay)
+                selectedDeliveryDay = deliveryDays[0].id
+
+            let today = deliveryDays.findIndex((element)=>{
+                return element.id == selectedDeliveryDay
+            })==0;
+        
+
+            let now = new Date()
+            let target = new Date(selectedDeliveryDay)
+            let tomorrow = new Date(selectedDeliveryDay)
+            tomorrow.setDate( tomorrow.getDate()+1 )
+      
+            work_time = getWorkTime()
+            
+            // console.log('work_time = %s', work_time)
+      
+            let match = work_time.match(/(\d+):(\d+)-(\d+):(\d+)/)
+            
+            let time_shift = parseInt(delivery_time)
+      
             if(match){
-                let start_time = parseInt(match[1])*60 + parseInt(match[2]);
-                let end_time = parseInt(match[3])*60 + parseInt(match[4]) + delivery_time;
-                
-                // переход через полночь
-                if(end_time<start_time) end_time += 24*60;
-
+              let start_time = parseInt(match[1])*60 + parseInt(match[2]) + time_shift
+              let end_time = parseInt(match[3])*60 + parseInt(match[4]) + time_shift
+      
+              // 11:00-03:00
+              if (end_time < start_time) end_time += 24*60
+      
+              let begin_time = 0
+      
+              if(today) {
                 // к текущему времени сразу прибавляю время доставки
-                let begin_time = date.getHours()*60 + date.getMinutes() + delivery_time;
-
-                if(begin_time>start_time)
-                    select.append(new Option('Как можно быстрее', 'now'));
-
-                for (let i = start_time; i < end_time; i+=30){
-                    if(i>=begin_time){
-                        if(i<24*60)
-                            select.append(new Option(
-                                `${pad( Math.floor(i/60) )}:${pad( i%60 )}`, 
-                                `${date_str} ${pad( Math.floor(i/60) )}:${pad( i%60 )}`));
-                        else
-                            select.append(new Option(
-                                `${pad( Math.floor((i-24*60)/60) )}:${pad( i%60 )}`, 
-                                `${tomorrow_str} ${pad( Math.floor((i-24*60)/60) )}:${pad( i%60 )}`));
+                begin_time = now.getHours()*60 + now.getMinutes() + time_shift
+                // если доставка уже работает
+                if (begin_time>=start_time)
+                    select.append(new Option('Как можно быстрее', 'now', true))
+              }
+      
+              for (let i = start_time; i < end_time; i+=30){
+                if(i>=begin_time){
+                    if(i>=24*60)
+                    {
+                        let value = `${pad(tomorrow.getDate())}.${pad(tomorrow.getMonth()+1)}.${tomorrow.getFullYear()} ${pad( Math.floor((i-24*60)/60) )}:${pad( i%60 )}`
+                        if(!selectedDeliveryTime) selectedDeliveryTime = value
+                        select.append(new Option(
+                            `${pad( Math.floor((i-24*60)/60) )}:${pad( i%60 )} (${pad(tomorrow.getDate())}.${pad(tomorrow.getMonth()+1)})`, 
+                            value, false, 
+                            value.substr(-5) == selectedDeliveryTime.substr(-5)))
+                    }
+                    else {
+                        let value = `${pad(target.getDate())}.${pad(target.getMonth()+1)}.${target.getFullYear()} ${pad( Math.floor(i/60) )}:${pad( i%60 )}`
+                        if(!selectedDeliveryTime) selectedDeliveryTime = value
+                        select.append(new Option(
+                            `${pad( Math.floor(i/60) )}:${pad( i%60 )}`, 
+                            value, false, 
+                            value.substr(-5) == selectedDeliveryTime.substr(-5)))
                     }
                 }
+              }
             }
         }
     }
 
-    function getCoords(elem) { // crossbrowser version
-        var box = elem[0].getBoundingClientRect();
-    
-        var body = document.body;
-        var docEl = document.documentElement;
-    
-        var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
-        var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
-    
-        var clientTop = docEl.clientTop || body.clientTop || 0;
-        var clientLeft = docEl.clientLeft || body.clientLeft || 0;
-    
-        var top  = box.top +  scrollTop - clientTop;
-        var left = box.left + scrollLeft - clientLeft;
-    
-        return { top: Math.round(top), left: Math.round(left) };
+    /**
+     * В выпадающем списке сменили время доставки - проверить ресторан (может быть ночная зона)
+     */
+    function onTimeChange(){
+        selectedDeliveryTime = $("select[name='time']").val()
+        //console.log('selectedDeliveryTime = %s', selectedDeliveryTime)
+        checkAdress(true)
+    }
+
+    /**
+     * В выпадающем списке сменили дату доставки - проверить ресторан (может быть ночная зона)
+     */
+    function onDateChange(){
+        selectedDeliveryDay = $("select[name='time_2']").val()
+        checkAdress(true)
     }
 });
 
