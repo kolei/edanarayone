@@ -1,4 +1,4 @@
-window.script_version = 12;
+window.script_version = 13;
 var tilda_form_id = 'form226638292'; //'form199889435';
 var DEV_MODE = true;
 
@@ -42,7 +42,7 @@ class UserData {
             return decodeURIComponent( this._flat );
         },
         set flat(value){
-            if(typeof value != 'undefined' && this._flat != value){
+            if(this._flat != value){
                 this._flat = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='flat']`).val(this.flat);
                 document.cookie = `flat=${this._flat}; max-age=31536000`;
@@ -454,6 +454,9 @@ $(document).ready(function ()
                 showError(ud.el('street'), 'Введите адрес доставки с номером дома', 'js-rule-error-all');
                 firstErrorElement = firstErrorElement || ud.el('street');
             }
+
+            // нигде больше квартира не присваивается...
+            ud.props.flat = ud.el('flat').val()
 
             if(!ud.props.flat){
                 showError(ud.el('flat'), 'Введите номер квартиры', 'js-rule-error-all');
