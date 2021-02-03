@@ -1,4 +1,4 @@
-window.script_version = 11;
+window.script_version = 12;
 var tilda_form_id = 'form226638292'; //'form199889435';
 var DEV_MODE = true;
 
@@ -103,15 +103,19 @@ class UserData {
         
         if(element)
         try {
-            let value = element.val().trim();
+            let elementVal = element.val()
 
-            // если поле пустое, то считать из куки
-            this.props[propName] = value ? value : this.getCookie( propName );
+            if(elementVal){
+                let value = elementVal.trim()
 
-            // при выходе с элемента запоминаю значение в куку
-            $(`#${tilda_form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
-                this.props[propName] = $(event.currentTarget).val();
-            });
+                // если поле пустое, то считать из куки
+                this.props[propName] = value ? value : this.getCookie( propName );
+
+                // при выходе с элемента запоминаю значение в куку
+                $(`#${tilda_form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
+                    this.props[propName] = $(event.currentTarget).val();
+                });
+            }
         } catch (error) {
             DEV_MODE && console.log(error);            
         }
