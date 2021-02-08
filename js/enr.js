@@ -1,4 +1,4 @@
-window.script_version = 18;
+window.script_version = 19;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -517,14 +517,15 @@ $(document).ready(function ()
                 <input type="hidden" name="brand" value="${window.BRAND_CODE}"/>`;
 
             $("div.t706__product").each(function(){
-                let dish_name = $(this).find('div.t706__product-title a').text();
-                dish_name = dish_name.replace(/\"/g, "'");
+                let dish_name = $(this).find('div.t706__product-title a').text()
+                dish_name = dish_name.replace(/\"/g, "'")
+                if(dish_name) dish_name = dish_name.trim()
                 
                 // в эту же кучу добавился модификатор, SKU пока последним элементом
-                let sku = $(this).find('div.t706__product-title div:last').text();
+                let sku = $(this).find('div.t706__product-title__option:last-child').text();
 
-                // ищу модификатор, он рядом со SKU - отличается отсутствием стиля
-                let modif = $('div.t706__product-title div:not([style*="opacity"])', this).text();
+                // ищу модификатор, он перед SKU
+                let modif = $('div.t706__product-title__option > div', this).text();
 
                 let quantity = $(this).find('div.t706__product-plusminus span.t706__product-quantity').text();
                 let total = $(this).find('div.t706__product-amount').text();
