@@ -1,5 +1,5 @@
 window.script_version = 15;
-var tilda_form_id = 'form226638292'; //'form199889435';
+var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
 class UserData {
@@ -534,9 +534,7 @@ $(document).ready(function ()
             // запрет повторного клика
             $('#chaihona_pay').attr('processing','1')
 
-            console.log(params)
-
-            // $(`<form action="${window.CHAIHONA_HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
+            $(`<form action="${window.CHAIHONA_HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
         }
     }
 
