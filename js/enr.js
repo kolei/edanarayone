@@ -1,4 +1,4 @@
-window.script_version = 21;
+window.script_version = 22;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -592,7 +592,7 @@ $(document).ready(function ()
                 $('div.t706__product-del').each(function(){
                     $(this).click()
                 })
-                process.nextTick(function(){
+                setTimeout(function(){
                     $('div.t706__cartwin-close').click()
                 })
             }, null);
