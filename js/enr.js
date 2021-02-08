@@ -1,4 +1,4 @@
-window.script_version = 14;
+window.script_version = 15;
 var tilda_form_id = 'form226638292'; //'form199889435';
 var DEV_MODE = true;
 
@@ -532,9 +532,11 @@ $(document).ready(function ()
             });
 
             // запрет повторного клика
-            $('#chaihona_pay').attr('processing','1');
+            $('#chaihona_pay').attr('processing','1')
 
-            $(`<form action="${window.CHAIHONA_HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
+            console.log(params)
+
+            // $(`<form action="${window.CHAIHONA_HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
         }
     }
 
