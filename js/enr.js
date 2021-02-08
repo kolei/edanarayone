@@ -1,4 +1,4 @@
-window.script_version = 17;
+window.script_version = 18;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -48,28 +48,28 @@ class UserData {
                 document.cookie = `flat=${this._flat}; max-age=31536000`;
             }
         },
-        _pass: '', // домофон
-        get pass(){
-            return decodeURIComponent( this._pass );
-        },
-        set pass(value){
-            if(typeof value != 'undefined' && this._pass != value){
-                this._pass = encodeURIComponent( value.trim() );
-                $(`#${tilda_form_id} input[name='pass']`).val(this.pass);
-                document.cookie = `pass=${this._pass}; max-age=31536000`;
-            }
-        },
-        _floor: '', // домофон
-        get floor(){
-            return decodeURIComponent( this._floor );
-        },
-        set floor(value){
-            if(typeof value != 'undefined' && this._floor != value){
-                this._floor = encodeURIComponent( value.trim() );
-                $(`#${tilda_form_id} input[name='floor']`).val(this.floor);
-                document.cookie = `floor=${this._floor}; max-age=31536000`;
-            }
-        },
+        // _pass: '', // домофон
+        // get pass(){
+        //     return decodeURIComponent( this._pass );
+        // },
+        // set pass(value){
+        //     if(typeof value != 'undefined' && this._pass != value){
+        //         this._pass = encodeURIComponent( value.trim() );
+        //         $(`#${tilda_form_id} input[name='pass']`).val(this.pass);
+        //         document.cookie = `pass=${this._pass}; max-age=31536000`;
+        //     }
+        // },
+        // _floor: '', // домофон
+        // get floor(){
+        //     return decodeURIComponent( this._floor );
+        // },
+        // set floor(value){
+        //     if(typeof value != 'undefined' && this._floor != value){
+        //         this._floor = encodeURIComponent( value.trim() );
+        //         $(`#${tilda_form_id} input[name='floor']`).val(this.floor);
+        //         document.cookie = `floor=${this._floor}; max-age=31536000`;
+        //     }
+        // },
         _jsonAddress: null, // хранит JSON объект возвращаемый geocode, либо NULL, если адрес меняли вручную
         get jsonAddress(){
             return this._jsonAddress;
@@ -105,15 +105,17 @@ class UserData {
         try {
             let elementVal = element.val()
 
-            if(elementVal){
+            if(typeof elementVal != 'undefined'){
                 let value = elementVal.trim()
 
                 // если поле пустое, то считать из куки
-                this.props[propName] = value ? value : this.getCookie( propName );
+                this.props[propName] = value ? value : this.getCookie( propName )
 
                 // при выходе с элемента запоминаю значение в куку
                 $(`#${tilda_form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
-                    this.props[propName] = $(event.currentTarget).val();
+                    let value = $(event.currentTarget).val()
+                    this.props[propName] = value
+                    console.log('property %s="%s"', propName, value)
                 });
             }
         } catch (error) {
@@ -132,8 +134,8 @@ class UserData {
         this.bindInput('name');
         this.bindInput('street');
         this.bindInput('flat');
-        this.bindInput('pass');
-        this.bindInput('floor');
+        // this.bindInput('pass');
+        //this.bindInput('floor');
 
         this.props.suggestedAdres = this.getCookie('suggestedAdres');
         if(this.props.suggestedAdres)
@@ -505,8 +507,6 @@ $(document).ready(function ()
                 <input type="hidden" name="street" value="${ud.props.jsonAddress.street}"/>
                 <input type="hidden" name="house" value="${ud.props.jsonAddress.house}"/>
                 <input type="hidden" name="flat" value="${ud.props.flat}"/>
-                <input type="hidden" name="floor" value="${ud.props.floor}"/>
-                <input type="hidden" name="intercom" value="${ud.props.pass}"/>
                 <input type="hidden" name="department" value="${ud.props.department}"/>
                 <input type="hidden" name="total" value="${total_price}"/>
                 <input type="hidden" name="payment" value="${payment}"/>
