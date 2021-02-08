@@ -1,4 +1,4 @@
-window.script_version = 20;
+window.script_version = 21;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -590,8 +590,11 @@ $(document).ready(function ()
             't706__cartwin_showed', 
             function(){
                 $('div.t706__product-del').each(function(){
-                    $(this).click();
-                });
+                    $(this).click()
+                })
+                process.nextTick(function(){
+                    $('div.t706__cartwin-close').click()
+                })
             }, null);
 
         // открываю корзину, чтобы прокликать на удаление все товары    
