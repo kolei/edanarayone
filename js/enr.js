@@ -1,4 +1,4 @@
-window.script_version = 19;
+window.script_version = 20;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -115,7 +115,7 @@ class UserData {
                 $(`#${tilda_form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
                     let value = $(event.currentTarget).val()
                     this.props[propName] = value
-                    console.log('property %s="%s"', propName, value)
+                    // console.log('property %s="%s"', propName, value)
                 });
             }
         } catch (error) {
@@ -558,7 +558,13 @@ $(document).ready(function ()
         // - открываю корзину, блюда в нее добавляются только при открытии
         // - всем блюдам жму "удалить"
     
-        let order = /order=([^&]+)/.exec(window.location.href)[1];
+        let order = null
+
+        try {
+            order = /order=([^&]+)/.exec(window.location.href)[1];
+        } catch (error) {
+            //
+        }
         if(order)
             $('div.t017__uptitle').text( `Оформлен заказ № ${decodeURI(order)}` );
         
