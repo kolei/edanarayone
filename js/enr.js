@@ -290,6 +290,7 @@ $(document).ready(function ()
     var deliveryDays = []
     var selectedDeliveryDay = null
     var deliveryByWeekObj = null
+    var dataDeliveryTime = null
     var selectedDeliveryTime = null
 
     var errorSet = new Set()
@@ -337,11 +338,15 @@ $(document).ready(function ()
         // поэтому невозможно переопределить ее поведение
         $(`#${tilda_form_id} div.t-form__submit`).hide();
 
-        // очищаю время доставки
-        $("select[name='time']").empty();
+        try {
+            // очищаю время доставки
+            $("select[name='time']").empty();
 
-        // и дату
-        $("select[name='time_2']").empty();
+            // и дату
+            $("select[name='time_2']").empty();
+        } catch (error) {
+            
+        }
 
         //01.10.2020 в поле телефон плейсхолдер +7(999)999-99-99, при фокусе автоматически вставлять +7
         ud.el('phone').attr('placeholder', '+7(999)999-99-99');
@@ -398,7 +403,7 @@ $(document).ready(function ()
         
         // при смене типа оплаты меняю текст кнопки
         $('input:radio[name="paymentsystem"]').change(function() {
-            if( $(this).val()=='cash' ) $('#chaihona_pay button').text('Заказать');
+            if( $(this).val()=='cash' ) $('#chaihona_pay button').text('Оформить');
             else $('#chaihona_pay button').text('Оплатить');
         });
 
@@ -803,6 +808,8 @@ $(document).ready(function ()
                             $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
                         
                             showBottomError('Обслуживающий ресторан не поддерживает онлайн-оплату', 'js-rule-error-string');
+
+                            $('#chaihona_pay button').text('Оформить');
                         }
                         ud.props.department = data.department;
                     }
@@ -942,8 +949,9 @@ $(document).ready(function ()
     }
   
 
-    function setDeliveryTimeByWeek(week_days, delivery_time){
-        deliveryByWeekObj = week_days
+    function setDeliveryTimeByWeek(week_days = null, delivery_time = null){
+        if(week_days) deliveryByWeekObj = week_days
+        if(delivery_time) dataDeliveryTime = parseInt(delivery_time)
         let select = $("select[name='time']")
         if(select){
             select.empty()
@@ -954,6 +962,7 @@ $(document).ready(function ()
                 selectedDeliveryDay = deliveryDays[0].id
 
             let today = deliveryDays.findIndex((element)=>{
+                //console.log(`${element.id} <> ${selectedDeliveryDay}`)
                 return element.id == selectedDeliveryDay
             })==0;
         
@@ -969,7 +978,7 @@ $(document).ready(function ()
       
             let match = work_time.match(/(\d+):(\d+)-(\d+):(\d+)/)
             
-            let time_shift = parseInt(delivery_time)
+            let time_shift = dataDeliveryTime
       
             if(match){
               let start_time = parseInt(match[1])*60 + parseInt(match[2]) + time_shift
