@@ -269,6 +269,9 @@ $(document).ready(function ()
     var elementWatchers = [];
 
     window.BRAND_CODE = '100000012';
+
+    console.log(window.location.hostname)
+
     if( window.location.hostname == '100процентоведа.рф' || 
         window.location.hostname == '100percentfood.ru' || 
         window.location.hostname == '100procentoveda.ru' || 
