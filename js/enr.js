@@ -1,4 +1,4 @@
-window.script_version = 26;
+window.script_version = 27;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -273,7 +273,7 @@ $(document).ready(function ()
     // кириллические УРЛ-ы выглядят не так как пишутся...
     console.log('hostname: %s', window.location.hostname)
 
-    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1ai' || //100процентоведа.рф
+    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1a' || //i 100процентоведа.рф
         window.location.hostname == '100percentfood.ru' || 
         window.location.hostname == '100procentoveda.ru' || 
         window.location.hostname == 'стопроцентоведа.рф')
