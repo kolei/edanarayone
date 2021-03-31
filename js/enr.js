@@ -1,4 +1,4 @@
-window.script_version = 23;
+window.script_version = 24;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -269,7 +269,11 @@ $(document).ready(function ()
     var elementWatchers = [];
 
     window.BRAND_CODE = '100000012';
-    if(window.location.hostname == 'edanarayone.ru'){
+    if( window.location.hostname == '100процентоведа.рф' || 
+        window.location.hostname == '100percentfood.ru' || 
+        window.location.hostname == '100procentoveda.ru' || 
+        window.location.hostname == 'стопроцентоведа.рф')
+    {
         // отдельный проект, свой id формы
         tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
