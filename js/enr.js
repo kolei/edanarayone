@@ -270,9 +270,10 @@ $(document).ready(function ()
 
     window.BRAND_CODE = '100000012';
 
-    console.log(window.location.hostname)
+    // кириллические УРЛ-ы выглядят не так как пишутся...
+    console.log('hostname: %s', window.location.hostname)
 
-    if( window.location.hostname == '100процентоведа.рф' || 
+    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1ai' || //100процентоведа.рф
         window.location.hostname == '100percentfood.ru' || 
         window.location.hostname == '100procentoveda.ru' || 
         window.location.hostname == 'стопроцентоведа.рф')
