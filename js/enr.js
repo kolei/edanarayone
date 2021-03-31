@@ -1,4 +1,4 @@
-window.script_version = 30;
+window.script_version = 31;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -293,14 +293,6 @@ $(document).ready(function ()
 
     DEV_MODE && console.log('PATH=%s', window.location.pathname);
 
-    try {
-        if($("input[name='street']").length==0){
-            console.warn('не найдено поле street, определение адреса работать не будет')
-        }
-    } catch (error) {
-        //
-    }
-
     var ud = null
     var deliveryDays = []
     var selectedDeliveryDay = null
@@ -315,6 +307,14 @@ $(document).ready(function ()
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
 
     function processRoot(){
+        try {
+            if($("input[name='street']").length==0){
+                console.warn('не найдено поле street, определение адреса работать не будет')
+            }
+        } catch (error) {
+            //
+        }
+    
         ud = new UserData();
 
         let cssId = 'jQueryUI_CSS';
