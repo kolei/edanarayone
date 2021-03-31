@@ -1,4 +1,4 @@
-window.script_version = 29;
+window.script_version = 30;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -273,10 +273,7 @@ $(document).ready(function ()
     // кириллические УРЛ-ы выглядят не так как пишутся...
     console.log('hostname: %s', window.location.hostname)
 
-    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1a' || //i 100процентоведа.рф
-        window.location.hostname == '100percentfood.ru' || 
-        window.location.hostname == '100procentoveda.ru' || 
-        window.location.hostname == 'стопроцентоведа.рф')
+    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1ai') //100процентоведа.рф
     {
         // отдельный проект, свой id формы
         tilda_form_id = 'form226638292';
@@ -288,8 +285,7 @@ $(document).ready(function ()
         tilda_form_id = 'form199889435';
     }
     else {
-        //TODO убрать - тестирую CORS 
-        tilda_form_id = 'form226638292';
+        // tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru';
     }
 
@@ -626,9 +622,9 @@ $(document).ready(function ()
     }
 
     function onYmapsReady(){
-        DEV_MODE && console.log('ymaps loaded');
+        // DEV_MODE && console.log('ymaps loaded');
         ymaps.ready(async function () {
-            DEV_MODE && console.log('ymaps ready');
+            // DEV_MODE && console.log('ymaps ready');
 
             $("input[name='street']").autocomplete({
                 // вызывается при вводе более 3-х символов, список формирую из ответов яндекса
