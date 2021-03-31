@@ -1,4 +1,4 @@
-window.script_version = 28;
+window.script_version = 29;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -296,6 +296,14 @@ $(document).ready(function ()
     console.log('v1.%s, CHAIHONA_HOST = %s', window.script_version, window.CHAIHONA_HOST);
 
     DEV_MODE && console.log('PATH=%s', window.location.pathname);
+
+    try {
+        if($("input[name='street']").length==0){
+            console.warn('не найдено поле street, определение адреса работать не будет')
+        }
+    } catch (error) {
+        //
+    }
 
     var ud = null
     var deliveryDays = []
@@ -618,9 +626,9 @@ $(document).ready(function ()
     }
 
     function onYmapsReady(){
-        //DEV_MODE && console.log('ymaps loaded');
+        DEV_MODE && console.log('ymaps loaded');
         ymaps.ready(async function () {
-            //DEV_MODE && console.log('ymaps ready');
+            DEV_MODE && console.log('ymaps ready');
 
             $("input[name='street']").autocomplete({
                 // вызывается при вводе более 3-х символов, список формирую из ответов яндекса
