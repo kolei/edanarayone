@@ -273,7 +273,8 @@ $(document).ready(function ()
     // кириллические УРЛ-ы выглядят не так как пишутся...
     console.log('hostname: %s', window.location.hostname)
 
-    if( window.location.hostname == 'xn--100-8cdjmfb4eicin5a1d.xn--p1ai') //100процентоведа.рф
+
+    if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
         tilda_form_id = 'form226638292';
@@ -289,7 +290,11 @@ $(document).ready(function ()
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru';
     }
 
-    console.log('v1.%s, CHAIHONA_HOST = %s', window.script_version, window.CHAIHONA_HOST);
+    console.log('v1.%s%s, CHAIHONA_HOST = %s, tilda form_id = %s', 
+        window.script_version, 
+        DEV_MODE ? '(dev)' : '',
+        window.CHAIHONA_HOST, 
+        tilda_form_id);
 
     DEV_MODE && console.log('PATH=%s', window.location.pathname);
 
