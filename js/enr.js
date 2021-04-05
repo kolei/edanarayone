@@ -1,4 +1,4 @@
-window.script_version = 32;
+window.script_version = 33;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -279,7 +279,7 @@ $(document).ready(function ()
         // отдельный проект, свой id формы
         tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
-        DEV_MODE = false;
+        // DEV_MODE = false;
     }
     else if(window.location.hostname == 'enr.kei.ru'){
         window.CHAIHONA_HOST = 'https://kei.chaihona1.ru';
