@@ -1,4 +1,4 @@
-window.script_version = 33;
+window.script_version = 34;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -384,33 +384,27 @@ $(document).ready(function ()
             "sun": "11:00-03:30"
         }, 60);
 
-
         // при входе на страницу скрываю блок с кнопкой "оплатить"
         // тильда походу не использует аттрибут action у кнопки submit, 
         // поэтому невозможно переопределить ее поведение
-        let oldPayButton = $(`#${tilda_form_id} div.t-form__submit`)
 
-        if(oldPayButton){
-            oldPayButton.hide()
+        $(`div.t-form__submit`).hide()
 
-            // рисуем аналогичную кнопку для перехода на оплату в чайхону   
-            $(`#${tilda_form_id} div.t-form__inputsbox`).append(`
-                <div 
-                    id="chaihona_pay" 
-                    style="text-align:center;vertical-align:middle;height:100%;margin-top:30px;margin-bottom:10px;width:100%;">
+        // рисуем аналогичную кнопку для перехода на оплату в чайхону   
+        $(`#${tilda_form_id} div.t-form__inputsbox`).append(`
+            <div 
+                id="chaihona_pay" 
+                style="text-align:center;vertical-align:middle;height:100%;margin-top:30px;margin-bottom:10px;width:100%;">
+                
+                <button 
+                    onclick="window.chaihona_pay_click();return false;"
+                    style="font-family:'Manrope',Arial,sans-serif;text-align:center;height:60px;border:0 none;font-size:16px;padding-left:60px;padding-right:60px;font-weight:700;white-space:nowrap;background-image:none;cursor:pointer;margin:0;box-sizing:border-box;outline:none;background:transparent;position:relative;width:100%;color:#ffffff;background-color:#ff0044;border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;">
                     
-                    <button 
-                        onclick="window.chaihona_pay_click();return false;"
-                        style="font-family:'Manrope',Arial,sans-serif;text-align:center;height:60px;border:0 none;font-size:16px;padding-left:60px;padding-right:60px;font-weight:700;white-space:nowrap;background-image:none;cursor:pointer;margin:0;box-sizing:border-box;outline:none;background:transparent;position:relative;width:100%;color:#ffffff;background-color:#ff0044;border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;">
-                        
-                        Оплатить
-                        
-                    </button>
+                    Оформить
                     
-                </div>`);
-        } else {
-            console.log('не найдена кнопка "оплатить" на форме: %s', tilda_form_id)
-        }
+                </button>
+                
+            </div>`);
 
         ud.el('street').change(function(){ 
             // при ручной корректировке инвалидирую адрес
