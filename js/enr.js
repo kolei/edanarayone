@@ -1,4 +1,4 @@
-window.script_version = 34;
+window.script_version = 35;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -526,7 +526,11 @@ $(document).ready(function ()
             let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val();
             let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
             let delivery_time = $(`#${tilda_form_id} select[name='time']`).val();
-            
+            let comment = $(`#${tilda_form_id} textarea[name='comment']`).val();
+
+            console.log('comment: %s', comment)
+            return
+
             let params=`<input type="hidden" name="phone" value="${purePhone}"/>
                 <input type="hidden" name="name" value="${ud.props.name}"/>
                 <input type="hidden" name="city" value="${ud.props.jsonAddress.city}"/>
@@ -539,6 +543,7 @@ $(document).ready(function ()
                 <input type="hidden" name="delivery_time" value="${delivery_time}"/>
                 <input type="hidden" name="lat" value="${ud.props.jsonAddress.lat}"/>
                 <input type="hidden" name="lon" value="${ud.props.jsonAddress.lon}"/>
+                <input type="hidden" name="comment" value="${comment}"/>
                 <input type="hidden" name="fullAddress" value="${ud.props.jsonAddress.fullAddress}"/>
                 <input type="hidden" name="brand" value="${window.BRAND_CODE}"/>`;
 
