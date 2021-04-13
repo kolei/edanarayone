@@ -1,4 +1,4 @@
-window.script_version = 37;
+window.script_version = 38;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -312,6 +312,34 @@ $(document).ready(function ()
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
 
     function processRoot(){
+        // запрашиваем актуальное меню
+        $.ajax({
+            url: `${window.CHAIHONA_HOST}/tilda-actual-menu`,
+            type: 'GET',
+            crossDomain: true,
+            data: {brandCode: window.BRAND_CODE}
+        }).done(function(rawData){
+            console.log('actual sku: %s', JSON.stringify(rawData))
+
+            let actualSKU = rawData
+            //let actualSKU = JSON.parse(rawData)
+
+            if(typeof actualSKU == 'object'){
+                console.log('actual sku is object')
+                $('.t-store__card').each(function(){
+                    let SKU = $(this).find('.t-store__card__sku span').text()
+                    console.log('check SKU: %s', SKU)
+                    if(SKU && actualSKU.findIndex(function(item){
+                        return item == SKU
+                    })==-1)
+                    {
+                        console.log('блюда нет в списке - скрываю: %s', SKU)
+                        $(this).hide()
+                    }
+                })
+            }
+        })
+
         try {
             if($("input[name='street']").length==0){
                 console.warn('не найдено поле street, определение адреса работать не будет')
