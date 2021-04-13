@@ -1,4 +1,4 @@
-window.script_version = 38;
+window.script_version = 39;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -319,10 +319,11 @@ $(document).ready(function ()
             crossDomain: true,
             data: {brandCode: window.BRAND_CODE}
         }).done(function(rawData){
-            console.log('actual sku: %s', JSON.stringify(rawData))
 
-            let actualSKU = rawData
-            //let actualSKU = JSON.parse(rawData)
+            // let actualSKU = rawData
+            let actualSKU = JSON.parse(rawData)
+
+            console.log('actual sku: %s', JSON.stringify(actualSKU))
 
             if(typeof actualSKU == 'object'){
                 console.log('actual sku is object')
