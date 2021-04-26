@@ -1,4 +1,4 @@
-window.script_version = 39;
+window.script_version = 40;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -323,10 +323,10 @@ $(document).ready(function ()
             // let actualSKU = rawData
             let actualSKU = JSON.parse(rawData)
 
-            console.log('actual sku: %s', JSON.stringify(actualSKU))
+            // console.log('actual sku: %s', JSON.stringify(actualSKU))
 
             if(typeof actualSKU == 'object'){
-                console.log('actual sku is object')
+                // console.log('actual sku is object')
                 $('.t-store__card').each(function(){
                     let SKU = $(this).find('.t-store__card__sku span').text()
                     console.log('check SKU: %s', SKU)
@@ -820,7 +820,12 @@ $(document).ready(function ()
 
             let doc_date = $("select[name='time']").val()
 
-            let data = {
+            if(doc_date=='now'){
+                let now = new Date()
+                doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+            }
+
+            let sentData = {
                 city: ud.props.jsonAddress.city,
                 street: ud.props.jsonAddress.street, 
                 house: ud.props.jsonAddress.house,
@@ -829,17 +834,19 @@ $(document).ready(function ()
                 lat: ud.props.jsonAddress.lat,
                 lon: ud.props.jsonAddress.lon,
                 doc_date
-            };
+            }
+
+            // console.log(JSON.stringify(sentData))
 
             // перед новым запросом гашу старую ошибку
-            ud.el('street').parent().find('div.t-input-error').hide();
+            ud.el('street').parent().find('div.t-input-error').hide()
             
             // запрашиваем возможность доставки у АПИ
             $.ajax({
                 url: `${window.CHAIHONA_HOST}/eda-na-raione`,
                 type: 'GET',
                 crossDomain: true,
-                data
+                data: sentData
             }).done(function(rawData){
                 //DEV_MODE && console.log(rawData);
                 let data = JSON.parse( rawData );
