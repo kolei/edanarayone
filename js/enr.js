@@ -1,4 +1,4 @@
-window.script_version = 40;
+window.script_version = 41;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -833,7 +833,8 @@ $(document).ready(function ()
                 fullAddress: ud.props.jsonAddress.fullAddress,
                 lat: ud.props.jsonAddress.lat,
                 lon: ud.props.jsonAddress.lon,
-                doc_date
+                doc_date,
+                superBrand: 'eda_na_raione'
             }
 
             // console.log(JSON.stringify(sentData))
@@ -898,12 +899,16 @@ $(document).ready(function ()
     // показ ошибок в штатных местах - под полем и рядом с кнопкой оплатить
     function showError(element, errorText, bottomClass=null){
         if(element){
-            let errorElement = element.parent().find('div.t-input-error');
+            let errorElement = element.parent().find('div.t-input-error')
             if(errorElement){
                 // показываю текст ошибки
-                errorElement.html( errorText );
-                errorElement.show();
+                errorElement.html( errorText )
+                errorElement.show()
+            } else {
+                console.log('не нашел t-input-error для вывода сообщения: "%s"', errorText)
             }
+        } else {
+            console.log('не нашел элемент для вывода сообщения: "%s"', errorText)
         }
         
         if(bottomClass){
