@@ -329,7 +329,7 @@ $(document).ready(function ()
                 // console.log('actual sku is object')
                 $('.t-store__card').each(function(){
                     let SKU = $(this).find('.t-store__card__sku span').text()
-                    console.log('check SKU: %s', SKU)
+                    // console.log('check SKU: %s', SKU)
                     if(SKU && actualSKU.findIndex(function(item){
                         return item == SKU
                     })==-1)
@@ -853,10 +853,10 @@ $(document).ready(function ()
                 let data = JSON.parse( rawData );
                 let chaihona_pay = $('#chaihona_pay');
                 if(data.error){
-                    chaihona_pay.attr('allow_pay', 'false');
+                    chaihona_pay.attr('allow_pay', 'false')
                     // реальную ошибку пишу в консоль, на экран всегда одну...
-                    console.log(data.error);
-                    showError(ud.el('street'), 'К сожалению, сейчас мы не доставляем по указанному адресу', 'js-rule-error-minlength');
+                    console.log(data.error)
+                    showError(ud.el('street'), 'К сожалению, сейчас мы не доставляем по указанному адресу', 'js-rule-error-minlength')
                 }
                 else if(data.message){
                     hideBottomError('js-rule-error-string');
@@ -901,7 +901,7 @@ $(document).ready(function ()
         if(element){
             let errorElement = element.parent().find('div.t-input-error')
             if(errorElement){
-                // показываю текст ошибки
+                console.log('показываю текст ошибки: "%s"', errorText)
                 errorElement.html( errorText )
                 errorElement.show()
             } else {
