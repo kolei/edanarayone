@@ -1,4 +1,4 @@
-window.script_version = 46;
+window.script_version = 47;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -402,7 +402,10 @@ $(document).ready(function ()
 
         try {
             $("div.t395__tab").not(".active").on("click", function(e){
-                console.log('кликнули по экспресс-меню')
+                //console.log('кликнули по экспресс-меню')
+                window.setTimeout(function(){
+                    window.location.reload()
+                }, 0)
             })
         } catch (error) {
             //
