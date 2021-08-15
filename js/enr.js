@@ -1,4 +1,4 @@
-window.script_version = 44;
+window.script_version = 45;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -348,7 +348,15 @@ $(document).ready(function ()
         } catch (error) {
             //
         }
-    
+
+        try {
+            if($("{tilda_form_id}").length==0){
+                console.warn('не найдена форма, скрипт не будет отрабатывать события')
+            }
+        } catch (error) {
+            //
+        }
+        
         ud = new UserData();
 
         let cssId = 'jQueryUI_CSS';
@@ -390,6 +398,14 @@ $(document).ready(function ()
             $("select[name='time_2']").empty();
         } catch (error) {
             
+        }
+
+        try {
+            $("div..t395__tab").not(".active").on("click", function(e){
+                console.log('кликнули по экспресс-меню')
+            })
+        } catch (error) {
+            //
         }
 
         //01.10.2020 в поле телефон плейсхолдер +7(999)999-99-99, при фокусе автоматически вставлять +7
