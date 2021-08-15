@@ -849,7 +849,7 @@ $(document).ready(function ()
                 crossDomain: true,
                 data: sentData
             }).done(function(rawData){
-                //DEV_MODE && console.log(rawData);
+                console.log('checkAddress: %s', rawData);
                 let data = JSON.parse( rawData );
                 let chaihona_pay = $('#chaihona_pay');
                 if(data.error){
