@@ -1,4 +1,4 @@
-window.script_version = 43;
+window.script_version = 44;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -277,7 +277,7 @@ $(document).ready(function ()
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        tilda_form_id = 'form226638292';
+        tilda_form_id = 'form313398951';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
         // DEV_MODE = false;
     }
