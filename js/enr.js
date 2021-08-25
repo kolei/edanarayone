@@ -1,5 +1,5 @@
-window.script_version = 48;
-var tilda_form_id = 'form199889435';
+window.script_version = 49;
+var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
 class UserData {
@@ -273,20 +273,24 @@ $(document).ready(function ()
     // кириллические УРЛ-ы выглядят не так как пишутся...
     console.log('hostname: %s', window.location.hostname)
 
+    let form = $('div.t706__cartwin-content form')
+    if(form){
+        tilda_form_id = form.get(0).id
+        console.log('form id = %s', tilda_form_id)
+    }
+    else
+        console.log('not found form id')
 
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        tilda_form_id = 'form313398951';
         window.CHAIHONA_HOST = 'https://chaihona1.ru';
         // DEV_MODE = false;
     }
     else if(window.location.hostname == 'enr.kei.ru'){
         window.CHAIHONA_HOST = 'https://kei.chaihona1.ru';
-        tilda_form_id = 'form199889435';
     }
     else {
-        // tilda_form_id = 'form226638292';
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru';
     }
 
