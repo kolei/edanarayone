@@ -1,4 +1,4 @@
-window.script_version = 47;
+window.script_version = 48;
 var tilda_form_id = 'form199889435';
 var DEV_MODE = true;
 
@@ -307,7 +307,9 @@ $(document).ready(function ()
 
     var errorSet = new Set()
 
-    if(window.location.pathname == '/' || window.location.pathname == '/eda') processRoot();
+    if( window.location.pathname == '/' || 
+        window.location.pathname == '/eda' || 
+        window.location.pathname == '/express') processRoot();
     else if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess();
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
 
