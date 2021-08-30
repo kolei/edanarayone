@@ -1,4 +1,4 @@
-window.script_version = 49;
+window.script_version = 50;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -313,7 +313,8 @@ $(document).ready(function ()
 
     if( window.location.pathname == '/' || 
         window.location.pathname == '/eda' || 
-        window.location.pathname == '/express') processRoot();
+        window.location.pathname == '/express' ||
+        window.location.pathname == '/express/') processRoot();
     else if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess();
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
 
@@ -975,7 +976,7 @@ $(document).ready(function ()
      * 
      * @param {int} [count]
      */
-    function getDeliveryDays(count = 30){
+    function getDeliveryDays(count = 7){
         let res = []
         let nextDate = new Date()
         let select = $("select[name='time_2']")
