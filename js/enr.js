@@ -1,4 +1,4 @@
-window.script_version = 50;
+window.script_version = 51;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -517,14 +517,15 @@ $(document).ready(function ()
         // кликнули на оплатить, проверка полей и редирект в чайхону
         window.chaihona_pay_click = function()
         {
+            console.log('chaihona_pay clicked...')
             if($('#chaihona_pay').attr('processing')) {
-                alert('Заказ уже в обработке, ждите...');
+                alert('Заказ уже в обработке, ждите...')
                 return;
             }
 
-            hideAllErrors();
-            hideBottomError('js-rule-error-all');
-            hideBottomError('js-rule-error-string');
+            hideAllErrors()
+            hideBottomError('js-rule-error-all')
+            hideBottomError('js-rule-error-string')
 
             let firstErrorElement = null;
 
@@ -572,6 +573,7 @@ $(document).ready(function ()
             }
 
             if (errorSet.size) {
+                console.log('has errors: %s', JSON.stringify(errorSet))
                 if(firstErrorElement){
                     $('div.t706__cartwin').animate({scrollTop: -100 });
                 }
