@@ -1,4 +1,4 @@
-window.script_version = 51;
+window.script_version = 52;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -275,8 +275,12 @@ $(document).ready(function ()
 
     let form = $('div.t706__cartwin-content form')
     if(form){
-        tilda_form_id = form.get(0).id
-        console.log('form id = %s', tilda_form_id)
+        try {
+            tilda_form_id = form.get(0).id
+            console.log('form id = %s', tilda_form_id)
+        } catch (error) {
+            console.log('not found form id')
+        }
     }
     else
         console.log('not found form id')
@@ -317,6 +321,10 @@ $(document).ready(function ()
         window.location.pathname == '/express/') processRoot();
     else if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess();
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
+
+    navigator.geolocation.getCurrentPosition(position => {
+        console.log('position: %s', JSON.stringify(position))
+    })
 
     function processRoot(){
         // запрашиваем актуальное меню
