@@ -1,4 +1,4 @@
-window.script_version = 54;
+window.script_version = 55;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -298,7 +298,7 @@ $(document).ready(function ()
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru'
     }
 
-    window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
+    // window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
 
     console.log('v1.%s%s, CHAIHONA_HOST = %s, tilda form_id = %s', 
         window.script_version, 
