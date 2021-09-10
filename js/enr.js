@@ -1,4 +1,4 @@
-window.script_version = 52;
+window.script_version = 53;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -288,14 +288,14 @@ $(document).ready(function ()
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        window.CHAIHONA_HOST = 'https://chaihona1.ru';
+        window.CHAIHONA_HOST = 'https://chaihona1.ru'
         // DEV_MODE = false;
     }
     else if(window.location.hostname == 'enr.kei.ru'){
-        window.CHAIHONA_HOST = 'https://kei.chaihona1.ru';
+        window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
     }
     else {
-        window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru';
+        window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru'
     }
 
     console.log('v1.%s%s, CHAIHONA_HOST = %s, tilda form_id = %s', 
@@ -312,21 +312,34 @@ $(document).ready(function ()
     var deliveryByWeekObj = null
     var dataDeliveryTime = null
     var selectedDeliveryTime = null
+    var coords = sessionStorage.getItem('lastCoordinates')
+
+    if(coords) {
+        console.log('saved coords = %s', coords)
+        coords = JSON.parse(coords)
+    }
 
     var errorSet = new Set()
-
-    if( window.location.pathname == '/' || 
-        window.location.pathname == '/eda' || 
-        window.location.pathname == '/express' ||
-        window.location.pathname == '/express/') processRoot();
-    else if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess();
-    else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError();
-
-    navigator.geolocation.getCurrentPosition(position => {
-        console.log('position: %s', JSON.stringify(position))
-    })
+   
+    // if( window.location.pathname == '/' || 
+    //     window.location.pathname == '/eda' || 
+    //     window.location.pathname == '/express' ||
+    //     window.location.pathname == '/express/') processRoot();
+    if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess()
+    else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError()
+    else processRoot()
 
     function processRoot(){
+        if(coords == null)
+            navigator.geolocation.getCurrentPosition(position => {
+                console.log('position: lat=%s, lon=%s', position.coords.latitude, position.coords.longitude)
+                coords = {
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude
+                }
+                sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
+            })
+
         // запрашиваем актуальное меню
         $.ajax({
             url: `${window.CHAIHONA_HOST}/tilda-actual-menu`,
@@ -766,6 +779,17 @@ $(document).ready(function ()
                     }
                 }
             }
+
+            if(coords){
+                ymaps.geocode([coords.lat, coords.lon]).then(res => {
+                    console.log('address by coord = %s', res.geoObjects.get(0).getAddressLine())
+                    checkLocalAddress(
+                        res.geoObjects.get(0).getAddressLine(), 
+                        coords.lat, 
+                        coords.lon
+                    )
+                })
+            }
         });
     }
 
@@ -816,6 +840,42 @@ $(document).ready(function ()
     }
 
     function pad(n){ return ('00' + n).slice(-2); }
+
+    /**
+     * Проверка возможности доставки на текущие координаты
+     * 
+     * @param {String} fullAddress 
+     * @param {Number} lat 
+     * @param {Number} lon 
+     */
+    async function checkLocalAddress(fullAddress, lat, lon){
+        return new Promise((resolve, reject)=>{
+            let now = new Date()
+            doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
+
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
+                type: 'GET',
+                crossDomain: true,
+                data: {
+                    brand: window.BRAND_CODE,
+                    fullAddress,
+                    lat,
+                    lon,
+                    doc_date,
+                    superBrand: 'eda_na_raione'
+                },
+                success: function(rawData){
+                    console.log('checkLocalAddress succes: %s', rawData)
+                    resolve(rawData)
+                },
+                error: function(err){
+                    console.log('checkLocalAddress error: %s', err)
+                    reject(err)
+                }
+            })
+        })
+    }
 
     // функция проверки адреса
     async function checkAdress(force = false)
