@@ -1,4 +1,4 @@
-window.script_version = 59;
+window.script_version = 60;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -338,6 +338,10 @@ $(document).ready(function ()
                     lon: position.coords.longitude
                 }
                 sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
+            }, error => {
+                console.log('getCurrentPosition error: %s %s', error.code, error.message)
+                // запрещено, не смог или таймаут - показываю попап с вводом адреса
+                $('#rec355952693 a[href="#popup:getadress"]').click()
             })
 
         try {
@@ -777,7 +781,7 @@ $(document).ready(function ()
                 let res = prepeareGC(gc, ud.props.suggestedAdres);
                 if(res){
                     // есть валидный адрес
-                    DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
+                    // DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
                     if(res.jsonData.house){
                         ud.props.jsonAddress = res.jsonData;
                         checkAdress();
