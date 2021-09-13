@@ -1,4 +1,4 @@
-window.script_version = 60;
+window.script_version = 61;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -312,7 +312,7 @@ $(document).ready(function ()
     var deliveryByWeekObj = null
     var dataDeliveryTime = null
     var selectedDeliveryTime = null
-    var coords = sessionStorage.getItem('lastCoordinates')
+    var coords = null //sessionStorage.getItem('lastCoordinates')
 
     if(coords) {
         console.log('saved coords = %s', coords)
