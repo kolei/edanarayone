@@ -1,4 +1,4 @@
-window.script_version = 62;
+window.script_version = 63;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -341,7 +341,11 @@ $(document).ready(function ()
             }, error => {
                 console.log('getCurrentPosition error: %s %s', error.code, error.message)
                 // запрещено, не смог или таймаут - показываю попап с вводом адреса
-                $('#rec355952693 a[href="#popup:getadress"]').click()
+                let getAdress = $('#rec355952693 a[href="#popup:getadress"]')
+                if(getAdress.length) 
+                    getAdress.click()
+                else
+                    console.log('не нашёл #popup:getadress')
             })
 
         try {
@@ -456,7 +460,7 @@ $(document).ready(function ()
 
         // тильда глючит - не пускает в редактирование CSS...
         // задаю стили для autocomplete
-        let styleTag = $('<style>ul.ui-autocomplete { z-index: 999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
+        let styleTag = $('<style>ul.ui-autocomplete { z-index: 9999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
         $('html > head').append(styleTag);
 
         setDeliveryTimeByWeek({
