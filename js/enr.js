@@ -1,4 +1,4 @@
-window.script_version = 73;
+window.script_version = 74;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -344,7 +344,7 @@ $(document).ready(function ()
                 try {
                     let getAdress = $('#rec355958602 a[href="#popup:getadress"]')
                     if(getAdress.length){ 
-                        console.log('found %s popups', getAdress.length)
+                        DEV_MODE && console.log('found %s popups', getAdress.length)
                         getAdress[0].click()
                     }
                     else
@@ -358,7 +358,7 @@ $(document).ready(function ()
         try {
             // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
             $('#rec355751621').hide() // !!
-            // $('#rec355960437').hide()
+            $('#rec355960437').hide()
         } catch (error) {}
 
         // запрашиваем актуальное меню
@@ -468,7 +468,7 @@ $(document).ready(function ()
 
         // тильда глючит - не пускает в редактирование CSS...
         // задаю стили для autocomplete
-        let styleTag = $('<style>ul.ui-autocomplete { z-index: 999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
+        let styleTag = $('<style>ul.ui-autocomplete { z-index: 10000000; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
         $('html > head').append(styleTag);
 
         setDeliveryTimeByWeek({
