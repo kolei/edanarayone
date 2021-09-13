@@ -1,4 +1,4 @@
-window.script_version = 75;
+window.script_version = 76;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -339,19 +339,19 @@ $(document).ready(function ()
                 }
                 sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
             }, error => {
-                console.log('getCurrentPosition error: %s %s', error.code, error.message)
+                DEV_MODE && console.log('getCurrentPosition error: %s %s', error.code, error.message)
                 // запрещено, не смог или таймаут - показываю попап с вводом адреса
                 try {
                     let getAdress = $('a[href="#popup:getadress"]')
                     if(getAdress.length){ 
                         DEV_MODE && console.log('found %s popups', getAdress.length)
-                        getAdress[0].click()
+                        getAdress.click()
                     }
                     else
-                        console.log('не нашёл #popup:getadress')
+                        DEV_MODE && console.log('не нашёл #popup:getadress')
                        
                 } catch (error) {
-                    console.log('error1: %s', JSON.stringify(error))
+                    DEV_MODE && console.log('error1: %s', JSON.stringify(error))
                 }
             })
 
