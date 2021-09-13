@@ -1,4 +1,4 @@
-window.script_version = 68;
+window.script_version = 69;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -350,7 +350,7 @@ $(document).ready(function ()
 
         try {
             // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
-            $('#rec355751621').hide()
+            // $('#rec355751621').hide() // !!
         } catch (error) {}
 
         // запрашиваем актуальное меню
