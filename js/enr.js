@@ -1,4 +1,4 @@
-window.script_version = 69;
+window.script_version = 70;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -341,7 +341,7 @@ $(document).ready(function ()
             }, error => {
                 console.log('getCurrentPosition error: %s %s', error.code, error.message)
                 // запрещено, не смог или таймаут - показываю попап с вводом адреса
-                let getAdress = $('#rec355952693 a[href="#popup:getadress"]')
+                let getAdress = $('#rec355958602 a[href="#popup:getadress"]')
                 if(getAdress.length) 
                     getAdress.click()
                 else
@@ -785,7 +785,7 @@ $(document).ready(function ()
             });
 
             // ручной ввод адреса в попапе
-            $('div[data-tooltip-hook="#popup:getadress"]  input[name="adress"]').autocomplete({
+            $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]').autocomplete({
                 source: ymapsSource,
                 select: function(event, ui){
                     DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
