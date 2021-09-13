@@ -1,4 +1,4 @@
-window.script_version = 82;
+window.script_version = 83;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -789,7 +789,7 @@ $(document).ready(function ()
 
                         if(typeof res.error == 'undefined'){
                             // доставка возможна - запоминаю адрес
-                            ud.street = ui.item.value
+                            ud.props.street = ui.item.value
                         } else {
                             // показываю попап о том, что адрес не валидный
                             $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
