@@ -1,4 +1,4 @@
-window.script_version = 85;
+window.script_version = 86;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -861,20 +861,23 @@ $(document).ready(function ()
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
 
         ymaps.geocode([coords.lat, coords.lon]).then(res => {
-            DEV_MODE && console.log('address by coord = %s', res.geoObjects.get(0).getAddressLine())
+            let fullAddress = res.geoObjects.get(0).getAddressLine()
+            DEV_MODE && console.log('address by coord = %s', fullAddress)
             checkLocalAddress(
-                res.geoObjects.get(0).getAddressLine(), 
+                fullAddress, 
                 coords.lat, 
                 coords.lon
-            ).then(rawData=>{
+            ).then(res2=>{
                 // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
-                console.log('checkLocalAddress succes: %s', rawData)
-                let link = $('#rec355751621 a[href="#popup:nodelivery"]')
-                if(link.length){
-                    $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr').text(fullAddress)
-                    link.click()
-                } else
-                    console.log('not found popup')
+                res2 = JSON.parse(res2)
+                DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res2))
+
+                if(typeof res2.error != 'undefined'){
+                    // показываю попап о том, что адрес не валидный
+                    $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
+                        .text(fullAddress)
+                    $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                }
             })
         }, err => {
             DEV_MODE && console.log('address by coord error: %s', JSON.stringify(err))
