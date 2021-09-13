@@ -1,4 +1,4 @@
-window.script_version = 77;
+window.script_version = 78;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -345,7 +345,7 @@ $(document).ready(function ()
                     let getAdress = $('a[href="#popup:getadress"]')
                     if(getAdress.length){ 
                         DEV_MODE && console.log('found %s popups', getAdress.length)
-                        getAdress[0].click()
+                        getAdress.click()
                     }
                     else
                         DEV_MODE && console.log('не нашёл #popup:getadress')
@@ -357,8 +357,8 @@ $(document).ready(function ()
 
         try {
             // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
-            $('#rec355751621').hide() // !!
-            $('#rec355958602').hide()
+            // $('#rec355751621').hide() // !!
+            // $('#rec355958602').hide()
         } catch (error) {}
 
         // запрашиваем актуальное меню
