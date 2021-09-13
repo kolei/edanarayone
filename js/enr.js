@@ -1,4 +1,4 @@
-window.script_version = 76;
+window.script_version = 77;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -345,7 +345,7 @@ $(document).ready(function ()
                     let getAdress = $('a[href="#popup:getadress"]')
                     if(getAdress.length){ 
                         DEV_MODE && console.log('found %s popups', getAdress.length)
-                        getAdress.click()
+                        getAdress[0].click()
                     }
                     else
                         DEV_MODE && console.log('не нашёл #popup:getadress')
@@ -798,15 +798,22 @@ $(document).ready(function ()
                 select: function(event, ui){
                     DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
 
-                    ud.props.street = ui.item.value;
-                    if(ud.props.suggestedAdres != ui.item.value){
-                        ud.props.suggestedAdres = ui.item.value;
-                        ud.props.department = null;
-                    }
-                    if(ui.item.jsonData.house){
-                        ud.props.jsonAddress = ui.item.jsonData;
-                        checkAdress();
-                    }
+                    checkLocalAddress(
+                        ui.item.jsonData.fullAddress, 
+                        ui.item.jsonData.lat, 
+                        ui.item.jsonData.lon
+                    ).then(res=>{
+                        DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
+                    })
+
+                    // ud.props.street = ui.item.value;
+                    // if(ud.props.suggestedAdres != ui.item.value){
+                    //     ud.props.suggestedAdres = ui.item.value;
+                    //     ud.props.department = null;
+                    // }
+                    // if(ui.item.jsonData.house){
+                    //     ud.props.jsonAddress = ui.item.jsonData;
+                    // }
                 },
                 minLength: 3
             })
@@ -930,7 +937,7 @@ $(document).ready(function ()
     }
 
     // функция проверки адреса
-    async function checkAdress(force = false)
+    async function checkAdress(force = false, popup_on_error = false)
     {
         let address = ud.el('street').val();
         if(!force && ud.props.suggestedAdres == address && ud.props.jsonAddress && ud.props.department){
@@ -1005,6 +1012,14 @@ $(document).ready(function ()
                     // реальную ошибку пишу в консоль, на экран всегда одну...
                     console.log(data.error)
                     showError(ud.el('street'), 'К сожалению, сейчас мы не доставляем по указанному адресу', 'js-rule-error-minlength')
+                    if(popup_on_error){
+                        let link = $('#rec355751621 a[href="#popup:nodelivery"]')
+                        if(link.length){
+                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
+                                .text(ud.props.jsonAddress.fullAddress,)
+                            link.click()
+                        }
+                    }
                 }
                 else if(data.message){
                     hideBottomError('js-rule-error-string');
