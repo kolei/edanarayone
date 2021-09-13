@@ -1,4 +1,4 @@
-window.script_version = 72;
+window.script_version = 73;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -341,19 +341,24 @@ $(document).ready(function ()
             }, error => {
                 console.log('getCurrentPosition error: %s %s', error.code, error.message)
                 // запрещено, не смог или таймаут - показываю попап с вводом адреса
-                let getAdress = $('a[href="#popup:getadress"]')
-                if(getAdress.length){ 
-                    console.log('found %s popups', getAdress.length)
-                    getAdress[0].click()
+                try {
+                    let getAdress = $('#rec355958602 a[href="#popup:getadress"]')
+                    if(getAdress.length){ 
+                        console.log('found %s popups', getAdress.length)
+                        getAdress[0].click()
+                    }
+                    else
+                        console.log('не нашёл #popup:getadress')
+                       
+                } catch (error) {
+                    console.log('error1: %s', JSON.stringify(error))
                 }
-                else
-                    console.log('не нашёл #popup:getadress')
             })
 
         try {
             // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
             $('#rec355751621').hide() // !!
-            // $('#rec355958602').hide()
+            // $('#rec355960437').hide()
         } catch (error) {}
 
         // запрашиваем актуальное меню
