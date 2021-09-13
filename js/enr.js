@@ -1,4 +1,4 @@
-window.script_version = 71;
+window.script_version = 72;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -342,8 +342,10 @@ $(document).ready(function ()
                 console.log('getCurrentPosition error: %s %s', error.code, error.message)
                 // запрещено, не смог или таймаут - показываю попап с вводом адреса
                 let getAdress = $('a[href="#popup:getadress"]')
-                if(getAdress.length) 
-                    getAdress.click()
+                if(getAdress.length){ 
+                    console.log('found %s popups', getAdress.length)
+                    getAdress[0].click()
+                }
                 else
                     console.log('не нашёл #popup:getadress')
             })
