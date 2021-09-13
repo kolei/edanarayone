@@ -1,4 +1,4 @@
-window.script_version = 64;
+window.script_version = 65;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -509,7 +509,8 @@ $(document).ready(function ()
         });
 
         // подписываюсь на события ухода с поля ввода адреса
-        ud.el('street').blur(function(){ checkAdress(); });
+        ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
+        ud.el('street').blur(function(){ checkAdress(); })
         
         // при смене типа оплаты меняю текст кнопки
         $('input:radio[name="paymentsystem"]').change(function() {
