@@ -1,4 +1,4 @@
-window.script_version = 81;
+window.script_version = 82;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -330,31 +330,6 @@ $(document).ready(function ()
     else processRoot()
 
     function processRoot(){
-        if(coords == null)
-            navigator.geolocation.getCurrentPosition(position => {
-                console.log('position: lat=%s, lon=%s', position.coords.latitude, position.coords.longitude)
-                coords = {
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude
-                }
-                sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
-            }, error => {
-                DEV_MODE && console.log('getCurrentPosition error: %s %s', error.code, error.message)
-                // запрещено, не смог или таймаут - показываю попап с вводом адреса
-                try {
-                    let getAdress = $('a[href="#popup:getadress"]')
-                    if(getAdress.length){ 
-                        DEV_MODE && console.log('found %s popups', getAdress.length)
-                        getAdress.click()
-                    }
-                    else
-                        DEV_MODE && console.log('не нашёл #popup:getadress')
-                       
-                } catch (error) {
-                    DEV_MODE && console.log('error1: %s', JSON.stringify(error))
-                }
-            })
-
         try {
             // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
             // $('#rec355751621').hide() // !!
@@ -850,7 +825,31 @@ $(document).ready(function ()
             //     }
             // }
 
-            if(coords){
+            if(coords == null){
+                navigator.geolocation.getCurrentPosition(position => {
+                    console.log('position: lat=%s, lon=%s', position.coords.latitude, position.coords.longitude)
+                    coords = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    }
+                    sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
+                }, error => {
+                    DEV_MODE && console.log('getCurrentPosition error: %s %s', error.code, error.message)
+                    // запрещено, не смог или таймаут - показываю попап с вводом адреса
+                    try {
+                        let getAdress = $('a[href="#popup:getadress"]')
+                        if(getAdress.length){ 
+                            DEV_MODE && console.log('found %s popups', getAdress.length)
+                            getAdress.click()
+                        }
+                        else
+                            DEV_MODE && console.log('не нашёл #popup:getadress')
+                        
+                    } catch (error) {
+                        DEV_MODE && console.log('error1: %s', JSON.stringify(error))
+                    }
+                })
+            } else {
                 ymaps.geocode([coords.lat, coords.lon]).then(res => {
                     console.log('address by coord = %s', res.geoObjects.get(0).getAddressLine())
                     checkLocalAddress(
