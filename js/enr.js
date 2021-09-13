@@ -1,4 +1,4 @@
-window.script_version = 80;
+window.script_version = 81;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -809,11 +809,14 @@ $(document).ready(function ()
                         res = JSON.parse(res)
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
 
-                        if(typeof res.error != 'undefined'){
-                            // скрываю форму с адресом
-                            $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
+                        // скрываю форму с адресом
+                        $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
 
-                            // показываю попап 
+                        if(typeof res.error == 'undefined'){
+                            // доставка возможна - запоминаю адрес
+                            ud.street = ui.item.value
+                        } else {
+                            // показываю попап о том, что адрес не валидный
                             $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
                                 .text(ui.item.jsonData.fullAddress)
                             $('#rec355751621 a[href="#popup:nodelivery"]').click()
