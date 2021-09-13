@@ -1,4 +1,4 @@
-window.script_version = 79;
+window.script_version = 80;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -806,11 +806,18 @@ $(document).ready(function ()
                         ui.item.jsonData.lat, 
                         ui.item.jsonData.lon
                     ).then(res=>{
+                        res = JSON.parse(res)
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
 
-                        $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                        if(typeof res.error != 'undefined'){
+                            // скрываю форму с адресом
+                            $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
 
-                        // $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
+                            // показываю попап 
+                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
+                                .text(ui.item.jsonData.fullAddress)
+                            $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                        }
                     })
 
                     // ud.props.street = ui.item.value;
