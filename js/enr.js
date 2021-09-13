@@ -1,4 +1,4 @@
-window.script_version = 61;
+window.script_version = 62;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -289,7 +289,7 @@ $(document).ready(function ()
     {
         // отдельный проект, свой id формы
         window.CHAIHONA_HOST = 'https://chaihona1.ru'
-        // DEV_MODE = false;
+        // DEV_MODE = false // !!
     }
     else if(window.location.hostname == 'eda_na_raione.ru'){
         window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
@@ -312,7 +312,7 @@ $(document).ready(function ()
     var deliveryByWeekObj = null
     var dataDeliveryTime = null
     var selectedDeliveryTime = null
-    var coords = null //sessionStorage.getItem('lastCoordinates')
+    var coords = null //sessionStorage.getItem('lastCoordinates') // !!
 
     if(coords) {
         console.log('saved coords = %s', coords)
@@ -723,6 +723,34 @@ $(document).ready(function ()
         $('div.t706__carticon').click();
     }
 
+    async function ymapsSource(request, response){
+        let items = await ymaps.suggest(request.term, { boundedBy: moscowBound, results: 7 });
+        
+        let arrayResult = [];
+        let arrayPromises = [];
+
+        items.forEach((element) => {
+            if (!element.value.match(/.*подъезд.*/)) 
+            {
+                // можно и по одному await-ить, но параллельно быстрее
+                arrayPromises.push( ymaps.geocode(element.value, { boundedBy: moscowBound }).then(gc=>{
+                    let res = prepeareGC(gc, element.value);
+
+                    if(res)
+                        arrayResult.push( res );
+                }));
+            }
+        });
+
+        // ждем, пока все запросы не обработаются
+        await Promise.all(arrayPromises).then(function(){
+            return ymaps.vow.resolve(arrayResult);
+        });
+
+        //response( availableTags);
+        response( arrayResult );
+    }
+
     function onYmapsReady(){
         // DEV_MODE && console.log('ymaps loaded');
         ymaps.ready(async function () {
@@ -730,33 +758,7 @@ $(document).ready(function ()
 
             $("input[name='street']").autocomplete({
                 // вызывается при вводе более 3-х символов, список формирую из ответов яндекса
-                source: async(request, response) => {
-                    let items = await ymaps.suggest(request.term, { boundedBy: moscowBound, results: 7 });
-        
-                    let arrayResult = [];
-                    let arrayPromises = [];
-        
-                    items.forEach((element) => {
-                        if (!element.value.match(/.*подъезд.*/)) 
-                        {
-                            // можно и по одному await-ить, но параллельно быстрее
-                            arrayPromises.push( ymaps.geocode(element.value, { boundedBy: moscowBound }).then(gc=>{
-                                let res = prepeareGC(gc, element.value);
-
-                                if(res)
-                                    arrayResult.push( res );
-                            }));
-                        }
-                    });
-        
-                    // ждем, пока все запросы не обработаются
-                    await Promise.all(arrayPromises).then(function(){
-                        return ymaps.vow.resolve(arrayResult);
-                    });
-        
-                    //response( availableTags);
-                    response( arrayResult );
-                },
+                source: ymapsSource,
                 // при выборе варианта делю улицу и дом
                 select: function(event, ui){
                     DEV_MODE && console.log('ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
@@ -774,20 +776,39 @@ $(document).ready(function ()
                 minLength: 3
             });
 
-            // при запуске suggestedAdres может быть уже заполнен из localstorage, переводим его в jsonAddress
-            if(ud.props.suggestedAdres){
-                // разбираю запомненный адрес
-                let gc = await ymaps.geocode( ud.props.suggestedAdres, { boundedBy: moscowBound } );
-                let res = prepeareGC(gc, ud.props.suggestedAdres);
-                if(res){
-                    // есть валидный адрес
-                    // DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
-                    if(res.jsonData.house){
-                        ud.props.jsonAddress = res.jsonData;
+            // ручной ввод адреса в попапе
+            $('div[data-tooltip-hook="#popup:getadress"]  input[name="adress"]').autocomplete({
+                source: ymapsSource,
+                select: function(event, ui){
+                    DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
+
+                    ud.props.street = ui.item.value;
+                    if(ud.props.suggestedAdres != ui.item.value){
+                        ud.props.suggestedAdres = ui.item.value;
+                        ud.props.department = null;
+                    }
+                    if(ui.item.jsonData.house){
+                        ud.props.jsonAddress = ui.item.jsonData;
                         checkAdress();
                     }
-                }
-            }
+                },
+                minLength: 3
+            })
+
+            // при запуске suggestedAdres может быть уже заполнен из localstorage, переводим его в jsonAddress
+            // if(ud.props.suggestedAdres){
+            //     // разбираю запомненный адрес
+            //     let gc = await ymaps.geocode( ud.props.suggestedAdres, { boundedBy: moscowBound } );
+            //     let res = prepeareGC(gc, ud.props.suggestedAdres);
+            //     if(res){
+            //         // есть валидный адрес
+            //         // DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
+            //         if(res.jsonData.house){
+            //             ud.props.jsonAddress = res.jsonData;
+            //             checkAdress();
+            //         }
+            //     }
+            // }
 
             if(coords){
                 ymaps.geocode([coords.lat, coords.lon]).then(res => {
