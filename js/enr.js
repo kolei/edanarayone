@@ -1,4 +1,4 @@
-window.script_version = 78;
+window.script_version = 79;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -798,12 +798,19 @@ $(document).ready(function ()
                 select: function(event, ui){
                     DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
 
+                    $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
+                        .val(ui.item.jsonData.fullAddress)
+                        
                     checkLocalAddress(
                         ui.item.jsonData.fullAddress, 
                         ui.item.jsonData.lat, 
                         ui.item.jsonData.lon
                     ).then(res=>{
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
+
+                        $('#rec355751621 a[href="#popup:nodelivery"]').click()
+
+                        // $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
                     })
 
                     // ud.props.street = ui.item.value;
@@ -840,7 +847,16 @@ $(document).ready(function ()
                         res.geoObjects.get(0).getAddressLine(), 
                         coords.lat, 
                         coords.lon
-                    )
+                    ).then(rawData=>{
+                        // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
+                        console.log('checkLocalAddress succes: %s', rawData)
+                        let link = $('#rec355751621 a[href="#popup:nodelivery"]')
+                        if(link.length){
+                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr').text(fullAddress)
+                            link.click()
+                        } else
+                            console.log('not found popup')
+                    })
                 })
             }
         });
@@ -901,38 +917,34 @@ $(document).ready(function ()
      * @param {Number} lat 
      * @param {Number} lon 
      */
-    function checkLocalAddress(fullAddress, lat, lon){
-        let now = new Date()
-        doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
+    async function checkLocalAddress(fullAddress, lat, lon){
+        return new Promise((resolve, reject)=>{
+            let now = new Date()
+            doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
 
-        $.ajax({
-            url: `${window.CHAIHONA_HOST}/eda-na-raione`,
-            type: 'GET',
-            crossDomain: true,
-            data: {
-                city: null,
-                street: null, 
-                house: null,
-                brand: window.BRAND_CODE,
-                fullAddress,
-                lat,
-                lon,
-                doc_date,
-                superBrand: 'eda_na_raione'
-            },
-            success: function(rawData){
-                // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
-                console.log('checkLocalAddress succes: %s', rawData)
-                let link = $('#rec355751621 a[href="#popup:nodelivery"]')
-                if(link.length){
-                    $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr').text(fullAddress)
-                    link.click()
-                } else
-                    console.log('not found popup')
-            },
-            error: function(err){
-                console.log('checkLocalAddress error: %s', JSON.stringify(err))
-            }
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
+                type: 'GET',
+                crossDomain: true,
+                data: {
+                    city: null,
+                    street: null, 
+                    house: null,
+                    brand: window.BRAND_CODE,
+                    fullAddress,
+                    lat,
+                    lon,
+                    doc_date,
+                    superBrand: 'eda_na_raione'
+                },
+                success: function(rawData){
+                    resolve(rawData)    
+                },
+                error: function(err){
+                    console.log('checkLocalAddress error: %s', JSON.stringify(err))
+                    reject(err)
+                }
+            })
         })
     }
 
