@@ -1,4 +1,4 @@
-window.script_version = 65;
+window.script_version = 66;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -460,7 +460,7 @@ $(document).ready(function ()
 
         // тильда глючит - не пускает в редактирование CSS...
         // задаю стили для autocomplete
-        let styleTag = $('<style>ul.ui-autocomplete { z-index: 999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
+        let styleTag = $('<style>ul.ui-autocomplete { z-index: 99999999; } div.ui-menu-item-wrapper {line-height: 2em;}</style>');
         $('html > head').append(styleTag);
 
         setDeliveryTimeByWeek({
