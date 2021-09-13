@@ -1,4 +1,4 @@
-window.script_version = 55;
+window.script_version = 56;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -291,14 +291,12 @@ $(document).ready(function ()
         window.CHAIHONA_HOST = 'https://chaihona1.ru'
         // DEV_MODE = false;
     }
-    else if(window.location.hostname == 'enr.kei.ru'){
+    else if(window.location.hostname == 'eda_na_raione.ru'){
         window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
     }
     else {
         window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru'
     }
-
-    // window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
 
     console.log('v1.%s%s, CHAIHONA_HOST = %s, tilda form_id = %s', 
         window.script_version, 
@@ -850,32 +848,33 @@ $(document).ready(function ()
      * @param {Number} lat 
      * @param {Number} lon 
      */
-    async function checkLocalAddress(fullAddress, lat, lon){
-        return new Promise((resolve, reject)=>{
-            let now = new Date()
-            doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
+    function checkLocalAddress(fullAddress, lat, lon){
+        let now = new Date()
+        doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
 
-            $.ajax({
-                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
-                type: 'GET',
-                crossDomain: true,
-                data: {
-                    brand: window.BRAND_CODE,
-                    fullAddress,
-                    lat,
-                    lon,
-                    doc_date,
-                    superBrand: 'eda_na_raione'
-                },
-                success: function(rawData){
-                    console.log('checkLocalAddress succes: %s', rawData)
-                    resolve(rawData)
-                },
-                error: function(err){
-                    console.log('checkLocalAddress error: %s', JSON.stringify(err))
-                    reject(err)
-                }
-            })
+        $.ajax({
+            url: `${window.CHAIHONA_HOST}/eda-na-raione`,
+            type: 'GET',
+            crossDomain: true,
+            data: {
+                city: null,
+                street: null, 
+                house: null,
+                brand: window.BRAND_CODE,
+                fullAddress,
+                lat,
+                lon,
+                doc_date,
+                superBrand: 'eda_na_raione'
+            },
+            success: function(rawData){
+                // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
+                console.log('checkLocalAddress succes: %s', rawData)
+                $("[href='#popup:nodelivery']").trigger("click")
+            },
+            error: function(err){
+                console.log('checkLocalAddress error: %s', JSON.stringify(err))
+            }
         })
     }
 
