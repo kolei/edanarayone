@@ -1,4 +1,4 @@
-window.script_version = 66;
+window.script_version = 67;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -509,9 +509,12 @@ $(document).ready(function ()
         });
 
         // подписываюсь на события ухода с поля ввода адреса
-        ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
         ud.el('street').blur(function(){ checkAdress(); })
-        
+
+        // запрещаю автозаполнение
+        ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
+        $('input[name="adress"]').focus(function(){this.setAttribute('autocomplete', 'none')})
+
         // при смене типа оплаты меняю текст кнопки
         $('input:radio[name="paymentsystem"]').change(function() {
             if( $(this).val()=='cash' ) $('#chaihona_pay button').text('Оформить');
