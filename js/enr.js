@@ -1,4 +1,4 @@
-window.script_version = 58;
+window.script_version = 59;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -339,6 +339,11 @@ $(document).ready(function ()
                 }
                 sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
             })
+
+        try {
+            // скрываю кнопку, которая используется для вызова попапа "нет доставки на указанный адрес"
+            $('#rec355751621').hide()
+        } catch (error) {}
 
         // запрашиваем актуальное меню
         $.ajax({
@@ -870,11 +875,12 @@ $(document).ready(function ()
             success: function(rawData){
                 // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
                 console.log('checkLocalAddress succes: %s', rawData)
-                // let link = $("[href='#popup:nodelivery']")
-                // if(link.length){
-                //     link.click()
-                // } else
-                //     console.log('not found popup')
+                let link = $('#rec355751621 a[href="#popup:nodelivery"]')
+                if(link.length){
+                    $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr').text(fullAddress)
+                    link.click()
+                } else
+                    console.log('not found popup')
             },
             error: function(err){
                 console.log('checkLocalAddress error: %s', JSON.stringify(err))
