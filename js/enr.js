@@ -1,4 +1,4 @@
-window.script_version = 57;
+window.script_version = 58;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -870,11 +870,11 @@ $(document).ready(function ()
             success: function(rawData){
                 // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
                 console.log('checkLocalAddress succes: %s', rawData)
-                let link = $("[href='#popup:nodelivery']")
-                if(link.length){
-                    link.click()
-                } else
-                    console.log('not found popup')
+                // let link = $("[href='#popup:nodelivery']")
+                // if(link.length){
+                //     link.click()
+                // } else
+                //     console.log('not found popup')
             },
             error: function(err){
                 console.log('checkLocalAddress error: %s', JSON.stringify(err))
