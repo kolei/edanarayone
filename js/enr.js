@@ -1,4 +1,4 @@
-window.script_version = 100
+window.script_version = 101
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -444,7 +444,7 @@ $(document).ready(function ()
                             ud.props.street = localAddressInfo.street
                             ud.props.suggestedAdres = localAddressInfo.street
 
-                            if(res.week_days){ 
+                            if(res.week_days) 
                                 setDeliveryTimeByWeek(res.week_days, parseInt(res.delivery_time))
         
                             sessionStorage.setItem('goodAddressWithCoordinates', 
