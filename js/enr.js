@@ -1,4 +1,4 @@
-window.script_version = 96
+window.script_version = 97
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -442,6 +442,11 @@ $(document).ready(function ()
                             // скрываю форму с адресом
                             $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
                             ud.props.street = localAddressInfo.street
+
+                            ud.props.suggestedAdres = localAddressInfo.street
+                            if(res.jsonData.house)
+                                ud.props.jsonAddress = res.jsonData
+        
                         } else {
                             // показываю попап о том, что адрес не валидный
                             showNoDeliveryPopup(localAddressInfo.fullAddress)
