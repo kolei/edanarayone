@@ -1,4 +1,4 @@
-window.script_version = 86;
+window.script_version = 87;
 var tilda_form_id = 'form347659861';
 var DEV_MODE = true;
 
@@ -413,6 +413,13 @@ $(document).ready(function ()
         else onYmapsReady();
 
         //TODO вывести информацию о невозможности оплаты онлайн - проверить
+
+        try {
+            $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('click', function(event){
+                event.preventDefault()
+                DEV_MODE && console.log('try button click...')
+            })
+        } catch (error) {}
 
         try {
             // очищаю время доставки
