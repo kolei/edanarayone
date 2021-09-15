@@ -1,4 +1,4 @@
-window.script_version = 90
+window.script_version = 91
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -411,8 +411,10 @@ $(document).ready(function ()
         //TODO вывести информацию о невозможности оплаты онлайн - проверить
 
         try {
-            $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('click', function(event){
+            $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('submit', function(event){
                 event.preventDefault()
+                event.stopPropagation()
+
                 DEV_MODE && console.log('try button click...')
 
                 if(localAddressInfo.changed){
@@ -439,6 +441,7 @@ $(document).ready(function ()
                         }
                     })
                 }                    
+                return false
             })
         } catch (error) {}
 
@@ -888,6 +891,10 @@ $(document).ready(function ()
         ymaps.geocode([coords.lat, coords.lon]).then(res => {
             let fullAddress = res.geoObjects.get(0).getAddressLine()
             DEV_MODE && console.log('address by coord = %s', fullAddress)
+
+            $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
+                .val(fullAddress)
+
             checkLocalAddress(
                 fullAddress, 
                 coords.lat, 
