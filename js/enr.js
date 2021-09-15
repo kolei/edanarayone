@@ -1,4 +1,4 @@
-window.script_version = 91
+window.script_version = 92
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -411,7 +411,8 @@ $(document).ready(function ()
         //TODO вывести информацию о невозможности оплаты онлайн - проверить
 
         try {
-            $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('submit', function(event){
+            //$('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('click', function(event){
+            $('div[data-tooltip-hook="#popup:getadress"] form').on('submit', function(event){
                 event.preventDefault()
                 event.stopPropagation()
 
