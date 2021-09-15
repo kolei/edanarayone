@@ -1,4 +1,4 @@
-window.script_version = 89
+window.script_version = 90
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -875,8 +875,8 @@ $(document).ready(function ()
     function geocodeLocalCoordinates(){
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
 
-        if(sessionStorage.getItem(badAddressWithCoordibates)){
-            let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem(badAddressWithCoordibates))
+        if(sessionStorage.getItem('badAddressWithCoordibates')){
+            let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem('badAddressWithCoordibates'))
             if(badAddressWithCoordibates.lat == coords.lat && badAddressWithCoordibates.lon==coords.lon){
                 // этот адрес уже проверяли - сразу выкидываем ошибку
                 DEV_MODE && console.log('координаты не изменились, показываю ошибку про старый адрес: %s',
