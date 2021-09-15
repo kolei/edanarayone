@@ -1,4 +1,4 @@
-window.script_version = 98
+window.script_version = 99
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -443,6 +443,10 @@ $(document).ready(function ()
                             $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
                             ud.props.street = localAddressInfo.street
                             ud.props.suggestedAdres = localAddressInfo.street
+
+                            sessionStorage.setItem('goodAddressWithCoordinates', 
+                                JSON.stringify(localAddressInfo))
+
                             // if(res.jsonData.house)
                             //     ud.props.jsonAddress = res.jsonData
                         } else {
@@ -888,6 +892,16 @@ $(document).ready(function ()
 
     function geocodeLocalCoordinates(){
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
+
+        if(sessionStorage.getItem('goodAddressWithCoordinates')){
+            let goodAddressWithCoordinates = JSON.parse(sessionStorage.getItem('goodAddressWithCoordinates'))
+
+            DEV_MODE && console.log('есть валидный адрес, не проверяю координаты: %s', 
+                JSON.stringify(goodAddressWithCoordinates))
+            ud.props.street = goodAddressWithCoordinates.street
+            ud.props.suggestedAdres = goodAddressWithCoordinates.street
+            return
+        }
 
         if(sessionStorage.getItem('badAddressWithCoordibates')){
             let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem('badAddressWithCoordibates'))
