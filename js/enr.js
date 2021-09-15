@@ -1,4 +1,4 @@
-window.script_version = 93
+window.script_version = 94
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -414,9 +414,10 @@ $(document).ready(function ()
             // штатную кнопку скрываю
             $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').hide()
 
-            // вместо нее рисую свою class="t281__submit t-submit" 
+            // вместо нее рисую свою 
             $('div[data-tooltip-hook="#popup:getadress"] div.t281__blockbutton').append(`
                 <button id="myCheckAddressButton" 
+                    class="t281__submit t-submit" 
                     style="color:#ffffff;background-color:#000000;border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;">
                     Готово</button>`);
 
@@ -444,13 +445,12 @@ $(document).ready(function ()
                             ud.props.street = localAddressInfo.street
                         } else {
                             // показываю попап о том, что адрес не валидный
-                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
-                                .text(localAddressInfo.fullAddress)
-                            $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                            showNoDeliveryPopup(localAddressInfo.fullAddress)
                         }
                     })
-                }                    
-                return false
+                } 
+                else 
+                    showNoDeliveryPopup(localAddressInfo.fullAddress)                   
             })
         } catch (error) {}
 
