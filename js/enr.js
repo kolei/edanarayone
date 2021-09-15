@@ -1,4 +1,4 @@
-window.script_version = 88
+window.script_version = 89
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -313,12 +313,7 @@ $(document).ready(function ()
     var deliveryByWeekObj = null
     var dataDeliveryTime = null
     var selectedDeliveryTime = null
-    var coords = null //sessionStorage.getItem('lastCoordinates') // !!
-
-    if(coords) {
-        console.log('saved coords = %s', coords)
-        coords = JSON.parse(coords)
-    }
+    var coords = null
 
     var errorSet = new Set()
    
@@ -854,8 +849,6 @@ $(document).ready(function ()
                         lat: position.coords.latitude,
                         lon: position.coords.longitude
                     }
-                    sessionStorage.setItem('lastCoordinates', JSON.stringify(coords))
-
                     geocodeLocalCoordinates()
                 }, error => {
                     DEV_MODE && console.log('getCurrentPosition error: %s %s', error.code, error.message)
@@ -882,6 +875,16 @@ $(document).ready(function ()
     function geocodeLocalCoordinates(){
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
 
+        if(sessionStorage.getItem(badAddressWithCoordibates)){
+            let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem(badAddressWithCoordibates))
+            if(badAddressWithCoordibates.lat == coords.lat && badAddressWithCoordibates.lon==coords.lon){
+                // этот адрес уже проверяли - сразу выкидываем ошибку
+                DEV_MODE && console.log('координаты не изменились, показываю ошибку про старый адрес: %s',
+                    badAddressWithCoordibates.fullAddress)
+                showNoDeliveryPopup(badAddressWithCoordibates.fullAddress)
+            }
+        }
+
         ymaps.geocode([coords.lat, coords.lon]).then(res => {
             let fullAddress = res.geoObjects.get(0).getAddressLine()
             DEV_MODE && console.log('address by coord = %s', fullAddress)
@@ -895,15 +898,22 @@ $(document).ready(function ()
                 DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res2))
 
                 if(typeof res2.error != 'undefined'){
-                    // показываю попап о том, что адрес не валидный
-                    $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
-                        .text(fullAddress)
-                    $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                    // запоминаю невалидный адрес, чтобы один и тот же запрос по кругу не гоняли
+                    coords.fullAddress = fullAddress
+                    sessionStorage.setItem('badAddressWithCoordibates', JSON.stringify(coords))
+                    showNoDeliveryPopup(fullAddress)
                 }
             })
         }, err => {
             DEV_MODE && console.log('address by coord error: %s', JSON.stringify(err))
         })
+    }
+
+    function showNoDeliveryPopup(fullAddress){
+        // показываю попап о том, что адрес не валидный
+        $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
+            .text(fullAddress)
+        $('#rec355751621 a[href="#popup:nodelivery"]').click()
     }
 
     function getCustomHouse(value){
