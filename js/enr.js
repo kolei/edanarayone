@@ -1,4 +1,4 @@
-window.script_version = 95
+window.script_version = 96
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -437,11 +437,10 @@ $(document).ready(function ()
                         res = JSON.parse(res)
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
 
-                        // скрываю форму с адресом
-                        $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
-
                         if(typeof res.error == 'undefined'){
                             // доставка возможна - запоминаю адрес
+                            // скрываю форму с адресом
+                            $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
                             ud.props.street = localAddressInfo.street
                         } else {
                             // показываю попап о том, что адрес не валидный
@@ -893,6 +892,7 @@ $(document).ready(function ()
                 // этот адрес уже проверяли - сразу выкидываем ошибку
                 DEV_MODE && console.log('координаты не изменились, показываю ошибку про старый адрес: %s',
                     badAddressWithCoordibates.fullAddress)
+
                 showNoDeliveryPopup(badAddressWithCoordibates.fullAddress)
                 return
             }
@@ -927,6 +927,13 @@ $(document).ready(function ()
     }
 
     function showNoDeliveryPopup(fullAddress){
+        // скрываю форму с адресом
+        $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
+
+        // сохраняю невалидный адрес в поле ввода
+        $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
+            .val(fullAddress)
+
         // показываю попап о том, что адрес не валидный
         $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
             .text(fullAddress)
