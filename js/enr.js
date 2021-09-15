@@ -1,6 +1,7 @@
-window.script_version = 87;
-var tilda_form_id = 'form347659861';
-var DEV_MODE = true;
+window.script_version = 88
+var tilda_form_id = 'form347659861'
+var DEV_MODE = true
+var localAddressInfo = {changed:false}
 
 class UserData {
     props = {
@@ -418,6 +419,31 @@ $(document).ready(function ()
             $('div[data-tooltip-hook="#popup:getadress"] button.t-submit').on('click', function(event){
                 event.preventDefault()
                 DEV_MODE && console.log('try button click...')
+
+                if(localAddressInfo.changed){
+                    localAddressInfo.changed = false
+                    checkLocalAddress(
+                        localAddressInfo.fullAddress, 
+                        localAddressInfo.lat, 
+                        localAddressInfo.lon
+                    ).then(res=>{
+                        res = JSON.parse(res)
+                        DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
+
+                        // скрываю форму с адресом
+                        $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
+
+                        if(typeof res.error == 'undefined'){
+                            // доставка возможна - запоминаю адрес
+                            ud.props.street = localAddressInfo.street
+                        } else {
+                            // показываю попап о том, что адрес не валидный
+                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
+                                .text(localAddressInfo.fullAddress)
+                            $('#rec355751621 a[href="#popup:nodelivery"]').click()
+                        }
+                    })
+                }                    
             })
         } catch (error) {}
 
@@ -501,9 +527,11 @@ $(document).ready(function ()
         // подписываюсь на события ухода с поля ввода адреса
         ud.el('street').blur(function(){ checkAdress(); })
 
+        $('input').attr('autocomplete', 'new-password');
+
         // запрещаю автозаполнение
-        ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
-        $('input[name="adress"]').focus(function(){this.setAttribute('autocomplete', 'none')})
+        // ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
+        // $('input[name="adress"]').focus(function(){this.setAttribute('autocomplete', 'none')})
 
         // при смене типа оплаты меняю текст кнопки
         $('input:radio[name="paymentsystem"]').change(function() {
@@ -783,27 +811,14 @@ $(document).ready(function ()
                     $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
                         .val(ui.item.jsonData.fullAddress)
                         
-                    checkLocalAddress(
-                        ui.item.jsonData.fullAddress, 
-                        ui.item.jsonData.lat, 
-                        ui.item.jsonData.lon
-                    ).then(res=>{
-                        res = JSON.parse(res)
-                        DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
-
-                        // скрываю форму с адресом
-                        $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
-
-                        if(typeof res.error == 'undefined'){
-                            // доставка возможна - запоминаю адрес
-                            ud.props.street = ui.item.value
-                        } else {
-                            // показываю попап о том, что адрес не валидный
-                            $('div[data-tooltip-hook="#popup:nodelivery"] .t390__descr')
-                                .text(ui.item.jsonData.fullAddress)
-                            $('#rec355751621 a[href="#popup:nodelivery"]').click()
-                        }
-                    })
+                    // проверку запускать только при клике на кнопку
+                    localAddressInfo = {
+                        changed: true,
+                        fullAddress: ui.item.jsonData.fullAddress,
+                        street: ui.item.value,
+                        lat: ui.item.jsonData.lat, 
+                        lon: ui.item.jsonData.lon
+                    }
 
                     // ud.props.street = ui.item.value;
                     // if(ud.props.suggestedAdres != ui.item.value){
