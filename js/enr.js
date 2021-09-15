@@ -1,4 +1,4 @@
-window.script_version = 94
+window.script_version = 95
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -894,6 +894,7 @@ $(document).ready(function ()
                 DEV_MODE && console.log('координаты не изменились, показываю ошибку про старый адрес: %s',
                     badAddressWithCoordibates.fullAddress)
                 showNoDeliveryPopup(badAddressWithCoordibates.fullAddress)
+                return
             }
         }
 
