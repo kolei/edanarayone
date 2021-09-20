@@ -1,4 +1,4 @@
-window.script_version = 102
+window.script_version = 103
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -822,12 +822,13 @@ $(document).ready(function ()
                     DEV_MODE && console.log('ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
 
                     ud.props.street = ui.item.value;
+                    ud.props.jsonAddress = ui.item.jsonData;
+
                     if(ud.props.suggestedAdres != ui.item.value){
                         ud.props.suggestedAdres = ui.item.value;
                         ud.props.department = null;
                     }
                     if(ui.item.jsonData.house){
-                        ud.props.jsonAddress = ui.item.jsonData;
                         checkAdress();
                     }
                 },
