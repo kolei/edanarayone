@@ -1,4 +1,4 @@
-window.script_version = 101
+window.script_version = 102
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -548,8 +548,14 @@ $(document).ready(function ()
 
         // при смене типа оплаты меняю текст кнопки
         $('input:radio[name="paymentsystem"]').change(function() {
-            if( $(this).val()=='cash' ) $('#chaihona_pay button').text('Оформить');
-            else $('#chaihona_pay button').text('Оплатить');
+            let inputValue = $(this).val()
+            if( 
+                inputValue=='cash' ||       // наличные
+                inputValue=='banktransfer'  // картой курьеру
+            ) 
+                $('#chaihona_pay button').text('Оформить');
+            else 
+                $('#chaihona_pay button').text('Оплатить');
         });
 
         $("select[name='time']").change(function(){
@@ -649,7 +655,20 @@ $(document).ready(function ()
                 return;
             }
             
-            let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val();
+            // у ЕНР свои коды валют - меняю
+            let tildaPayment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
+            let payment = 'proekt-eda-rubli'
+
+            switch (tildaPayment) {
+                case 'cloudpayments':
+                    payment = 'proekt-eda-online'
+                    break;
+                case 'banktransfer':
+                    payment = 'proekt-eda-karty'
+                    break;
+            }
+
+
             let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
             let delivery_time = $(`#${tilda_form_id} select[name='time']`).val()
 
