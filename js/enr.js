@@ -1,4 +1,4 @@
-window.script_version = 103
+window.script_version = 104
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -656,6 +656,9 @@ $(document).ready(function ()
             }
             
             // у ЕНР свои коды валют - меняю
+            let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
+
+            /* !!!
             let tildaPayment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
             let payment = 'proekt-eda-rubli'
 
@@ -667,7 +670,7 @@ $(document).ready(function ()
                     payment = 'proekt-eda-karty'
                     break;
             }
-
+            */
 
             let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
             let delivery_time = $(`#${tilda_form_id} select[name='time']`).val()
