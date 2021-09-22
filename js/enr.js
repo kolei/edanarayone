@@ -1,4 +1,4 @@
-window.script_version = 110
+window.script_version = 111
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -684,6 +684,11 @@ $(document).ready(function ()
                 firstErrorElement = firstErrorElement || phone;
             }
 
+            let persons = $(`#${tilda_form_id} select[name='cutlery']`).val()
+            if(persons=='Не нужны') persons=0
+
+            DEV_MODE && console.log('persons = %s', persons)
+
             if (errorSet.size) {
                 console.log('has errors: %s', JSON.stringify(errorSet))
                 if(firstErrorElement){
@@ -709,11 +714,6 @@ $(document).ready(function ()
 
             let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
             let delivery_time = $(`#${tilda_form_id} select[name='time']`).val()
-
-            let persons = $(`#${tilda_form_id} select[name='cutlery']`).val()
-            if(persons=='Не нужны') persons=0
-
-            DEV_MODE && console.log('persons = %s', persons)
 
             // в тестовом проекте комментариев нет
             let comment=''
