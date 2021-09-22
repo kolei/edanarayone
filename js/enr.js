@@ -1,4 +1,4 @@
-window.script_version = 108
+window.script_version = 109
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -6,13 +6,12 @@ var localAddressInfo = {changed:false}
 /*
 + Обнуление корзины после оформления заказа
 + В карточке оформления - email обязательное поле
-4. Отбивка по заказу на почту - До сих пор макет Ч1
-5. Михаил - возможно чтобы отбивка приходила с домена @100percentfood.ru, его вроде настроили
++ Отбивка по заказу на почту - До сих пор макет Ч1
++ Михаил - возможно чтобы отбивка приходила с домена @100percentfood.ru, его вроде настроили
 9. Поменять в фо в Онлайн текст на нормальное название вместо: Источник - Новый сайт https://www.xn--100-8cdjmfb4eicin5a1d.xn--p1ai
-10. Разобраться с типами оплаты, сейчас прилетает: Тип оплаты: Наличные (не использовать)
-11. При выборе адреса руками (пример Новый Арбат,8) в карточке оформления запрашивает ввести номер дома, хотя он указан
-12. При оплате картой курьеру переход на страницу оплаты
-15. Исправить режим работы сейчас «с 11-05», надо «с 11-23»
++ Разобраться с типами оплаты, сейчас прилетает: Тип оплаты: Наличные (не использовать)
++ При выборе адреса руками (пример Новый Арбат,8) в карточке оформления запрашивает ввести номер дома, хотя он указан
++ При оплате картой курьеру переход на страницу оплаты
 */
 
 class UserData {
@@ -467,6 +466,7 @@ $(document).ready(function ()
                             $('div[data-tooltip-hook="#popup:getadress"] .t-popup__close').click()
                             ud.props.street = localAddressInfo.street
                             ud.props.suggestedAdres = localAddressInfo.street
+                            ud.props.jsonAddress = localAddressInfo.jsonData
 
                             if(res.week_days) 
                                 setDeliveryTimeByWeek(res.week_days, parseInt(res.delivery_time))
@@ -621,6 +621,8 @@ $(document).ready(function ()
                 alert('Заказ уже в обработке, ждите...')
                 return;
             }
+
+            errorSet = new Set()
 
             hideAllErrors()
             hideBottomError('js-rule-error-all')
@@ -887,7 +889,8 @@ $(document).ready(function ()
                         fullAddress: ui.item.jsonData.fullAddress,
                         street: ui.item.value,
                         lat: ui.item.jsonData.lat, 
-                        lon: ui.item.jsonData.lon
+                        lon: ui.item.jsonData.lon,
+                        jsonData: ui.item.jsonData
                     }
 
                     // ud.props.street = ui.item.value;
