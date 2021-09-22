@@ -1,11 +1,11 @@
-window.script_version = 106
+window.script_version = 107
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
 
 /*
-1. Обнуление корзины после оформления заказа
-3. В карточке оформления - email обязательное поле
++ Обнуление корзины после оформления заказа
++ В карточке оформления - email обязательное поле
 4. Отбивка по заказу на почту - До сих пор макет Ч1
 5. Михаил - возможно чтобы отбивка приходила с домена @100percentfood.ru, его вроде настроили
 9. Поменять в фо в Онлайн текст на нормальное название вместо: Источник - Новый сайт https://www.xn--100-8cdjmfb4eicin5a1d.xn--p1ai
@@ -36,7 +36,7 @@ class UserData {
             if(typeof value != 'undefined' && this._email != value){
                 this._email = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='email']`).val(this.email);
-                document.cookie = `name=${this._email}; max-age=31536000`;
+                document.cookie = `email=${this._email}; max-age=31536000`;
             }
         },
         _phone: '',
@@ -691,9 +691,8 @@ $(document).ready(function ()
             }
             
             // у ЕНР свои коды валют - меняю
-            let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
+            // let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
 
-            /* !!!
             let tildaPayment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
             let payment = 'proekt-eda-rubli'
 
@@ -705,7 +704,6 @@ $(document).ready(function ()
                     payment = 'proekt-eda-karty'
                     break;
             }
-            */
 
             let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
             let delivery_time = $(`#${tilda_form_id} select[name='time']`).val()
