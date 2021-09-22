@@ -1,7 +1,19 @@
-window.script_version = 104
+window.script_version = 105
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
+
+/*
+1. Обнуление корзины после оформления заказа
+3. В карточке оформления - email обязательное поле
+4. Отбивка по заказу на почту - До сих пор макет Ч1
+5. Михаил - возможно чтобы отбивка приходила с домена @100percentfood.ru, его вроде настроили
+9. Поменять в фо в Онлайн текст на нормальное название вместо: Источник - Новый сайт https://www.xn--100-8cdjmfb4eicin5a1d.xn--p1ai
+10. Разобраться с типами оплаты, сейчас прилетает: Тип оплаты: Наличные (не использовать)
+11. При выборе адреса руками (пример Новый Арбат,8) в карточке оформления запрашивает ввести номер дома, хотя он указан
+12. При оплате картой курьеру переход на страницу оплаты
+15. Исправить режим работы сейчас «с 11-05», надо «с 11-23»
+*/
 
 class UserData {
     props = {
@@ -14,6 +26,17 @@ class UserData {
                 this._name = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id} input[name='name']`).val(this.name);
                 document.cookie = `name=${this._name}; max-age=31536000`;
+            }
+        },
+        _email: '',
+        get email(){ 
+            return decodeURIComponent( this._email )
+        },
+        set email(value){
+            if(typeof value != 'undefined' && this._email != value){
+                this._email = encodeURIComponent( value.trim() );
+                $(`#${tilda_form_id} input[name='email']`).val(this.email);
+                document.cookie = `name=${this._email}; max-age=31536000`;
             }
         },
         _phone: '',
@@ -133,6 +156,7 @@ class UserData {
     constructor(){
         this.bindInput('phone');
         this.bindInput('name');
+        this.bindInput('email');
         this.bindInput('street');
         this.bindInput('flat');
         // this.bindInput('pass');
@@ -631,6 +655,17 @@ $(document).ready(function ()
                 firstErrorElement = firstErrorElement || name;
             }
 
+            let email = ud.el('email');
+            if(/^[\S\s]+$/.test(email.val())){
+                console.log('Введен email: %s', ud.props.email)
+                email.parent().find('div.t-input-error').hide();
+                hideBottomError('js-rule-error-name');
+            } else {
+                console.log('Не введен email')
+                showError(email, 'Введите EMail', 'js-rule-error-name');
+                firstErrorElement = firstErrorElement || email;
+            }
+
             let phone = ud.el('phone');
             let purePhone = '';
             if(/^\+*[\d\(\)\-\s]+$/.test(phone.val())){
@@ -685,6 +720,7 @@ $(document).ready(function ()
 
             let params=`<input type="hidden" name="phone" value="${purePhone}"/>
                 <input type="hidden" name="name" value="${ud.props.name}"/>
+                <input type="hidden" name="email" value="${ud.props.email}"/>
                 <input type="hidden" name="city" value="${ud.props.jsonAddress.city}"/>
                 <input type="hidden" name="street" value="${ud.props.jsonAddress.street}"/>
                 <input type="hidden" name="house" value="${ud.props.jsonAddress.house}"/>
