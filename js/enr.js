@@ -1,4 +1,4 @@
-window.script_version = 105
+window.script_version = 106
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -567,7 +567,7 @@ $(document).ready(function ()
         $('input').attr('autocomplete', 'new-password');
 
         // запрещаю автозаполнение
-        // ud.el('street').focus(function(){this.setAttribute('autocomplete', 'none')})
+        ud.el('street').focus(function(){this.setAttribute('autocomplete', 'new-password')})
         // $('input[name="adress"]').focus(function(){this.setAttribute('autocomplete', 'none')})
 
         // при смене типа оплаты меняю текст кнопки
@@ -1122,11 +1122,11 @@ $(document).ready(function ()
                     if(ud.props.suggestedAdres == address){
                         // адрес не изменился, запоминаю и выхожу
                         ud.props.suggestedAdres = address;
-                        if(res.jsonData.house){
-                            ud.props.jsonAddress = res.jsonData;
-                            DEV_MODE && console.log('адрес остался прежним, проверку не запускаю (2)');
-                            return;
-                        }
+                        // if(res.jsonData.house){
+                        //     ud.props.jsonAddress = res.jsonData;
+                        //     DEV_MODE && console.log('адрес остался прежним, проверку не запускаю (2)');
+                        //     return;
+                        // }
                     }
 
                     ud.props.suggestedAdres = address;
