@@ -1,4 +1,4 @@
-window.script_version = 107
+window.script_version = 108
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -903,19 +903,19 @@ $(document).ready(function ()
             })
 
             // при запуске suggestedAdres может быть уже заполнен из localstorage, переводим его в jsonAddress
-            // if(ud.props.suggestedAdres){
-            //     // разбираю запомненный адрес
-            //     let gc = await ymaps.geocode( ud.props.suggestedAdres, { boundedBy: moscowBound } );
-            //     let res = prepeareGC(gc, ud.props.suggestedAdres);
-            //     if(res){
-            //         // есть валидный адрес
-            //         // DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
-            //         if(res.jsonData.house){
-            //             ud.props.jsonAddress = res.jsonData;
-            //             checkAdress();
-            //         }
-            //     }
-            // }
+            if(ud.props.suggestedAdres){
+                // разбираю запомненный адрес
+                let gc = await ymaps.geocode( ud.props.suggestedAdres, { boundedBy: moscowBound } );
+                let res = prepeareGC(gc, ud.props.suggestedAdres);
+                if(res){
+                    // есть валидный адрес
+                    DEV_MODE && console.log('prepared suggestedAdres: %s', JSON.stringify(res));
+                    if(res.jsonData.house){
+                        ud.props.jsonAddress = res.jsonData;
+                        checkAdress();
+                    }
+                }
+            }
 
             if(coords == null){
                 navigator.geolocation.getCurrentPosition(position => {
