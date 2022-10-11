@@ -1,4 +1,4 @@
-window.script_version = 114
+window.script_version = 115
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -889,8 +889,10 @@ $(document).ready(function ()
                 select: function(event, ui){
                     console.log('try geocode: %s', JSON.stringify(ui))
                     ymaps.geocode(ui.item.value, { boundedBy: moscowBound }).then(gc=>{
-                        let res = prepeareGC(gc, ui.value)
+                        console.log('try prepeareGC')
+                        let res = prepeareGC(gc, ui.item.value)
 
+                        console.log('prepeareGC res = %s', JSON.stringify(res))
                         DEV_MODE && console.log('jsonData = %s', JSON.stringify(res.jsonData));
 
                         ud.props.street = res.value;
