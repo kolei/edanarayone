@@ -1,4 +1,4 @@
-window.script_version = 111
+window.script_version = 112
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -829,29 +829,52 @@ $(document).ready(function ()
     async function ymapsSource(request, response){
         let items = await ymaps.suggest(request.term, { boundedBy: moscowBound, results: 7 });
         
-        let arrayResult = [];
-        let arrayPromises = [];
+        var arrayResult = [];
 
-        items.forEach((element) => {
-            if (!element.value.match(/.*подъезд.*/)) 
-            {
-                // можно и по одному await-ить, но параллельно быстрее
-                arrayPromises.push( ymaps.geocode(element.value, { boundedBy: moscowBound }).then(gc=>{
-                    let res = prepeareGC(gc, element.value);
+        // function firstTwoParts (value) {
+        //   const parts = value.split(',')
+        //   let res = ''
+        //   if (parts.length > 0) res += parts[0]
+        //   if (parts.length > 1) res += ', ' + parts[1]
+        //   return res
+        // }
+    
+        items.forEach(i => {
+          let displayName = ''
+          if (!i.value.match(/.*подъезд.*/)) {
+            // отрезаю населённый пункт
+            let parts = i.displayName.split(',')
+            parts.pop()
+            displayName = parts.join(',')
+            arrayResult.push({displayName, value: i.value})
+          }
+        })
 
-                    if(res)
-                        arrayResult.push( res );
-                }));
-            }
-        });
+        response(arrayResult)
 
-        // ждем, пока все запросы не обработаются
-        await Promise.all(arrayPromises).then(function(){
-            return ymaps.vow.resolve(arrayResult);
-        });
+        // let arrayResult = [];
+        // let arrayPromises = [];
 
-        //response( availableTags);
-        response( arrayResult );
+        // items.forEach((element) => {
+        //     if (!element.value.match(/.*подъезд.*/)) 
+        //     {
+        //         // можно и по одному await-ить, но параллельно быстрее
+        //         arrayPromises.push( ymaps.geocode(element.value, { boundedBy: moscowBound }).then(gc=>{
+        //             let res = prepeareGC(gc, element.value);
+
+        //             if(res)
+        //                 arrayResult.push( res );
+        //         }));
+        //     }
+        // });
+
+        // // ждем, пока все запросы не обработаются
+        // await Promise.all(arrayPromises).then(function(){
+        //     return ymaps.vow.resolve(arrayResult);
+        // });
+
+        // //response( availableTags);
+        // response( arrayResult );
     }
 
     function onYmapsReady(){
@@ -864,18 +887,35 @@ $(document).ready(function ()
                 source: ymapsSource,
                 // при выборе варианта делю улицу и дом
                 select: function(event, ui){
-                    DEV_MODE && console.log('ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
+                    ymaps.geocode(ui.value, { boundedBy: moscowBound }).then(gc=>{
+                        let res = prepeareGC(gc, ui.value)
 
-                    ud.props.street = ui.item.value;
-                    ud.props.jsonAddress = ui.item.jsonData;
+                        DEV_MODE && console.log('jsonData = %s', JSON.stringify(res.jsonData));
 
-                    if(ud.props.suggestedAdres != ui.item.value){
-                        ud.props.suggestedAdres = ui.item.value;
-                        ud.props.department = null;
-                    }
-                    if(ui.item.jsonData.house){
-                        checkAdress();
-                    }
+                        ud.props.street = res.value;
+                        ud.props.jsonAddress = res.jsonData;
+
+                        if(ud.props.suggestedAdres != res.value){
+                            ud.props.suggestedAdres = res.value;
+                            ud.props.department = null;
+                        }
+                        if(res.jsonData.house){
+                            checkAdress();
+                        }
+                    })
+
+                    // DEV_MODE && console.log('ui.item.jsonData = %s', JSON.stringify(res.jsonData));
+
+                    // ud.props.street = ui.item.value;
+                    // ud.props.jsonAddress = ui.item.jsonData;
+
+                    // if(ud.props.suggestedAdres != ui.item.value){
+                    //     ud.props.suggestedAdres = ui.item.value;
+                    //     ud.props.department = null;
+                    // }
+                    // if(ui.item.jsonData.house){
+                    //     checkAdress();
+                    // }
                 },
                 minLength: 3
             });
@@ -884,28 +924,20 @@ $(document).ready(function ()
             $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]').autocomplete({
                 source: ymapsSource,
                 select: function(event, ui){
-                    DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
+                    console.warn('выбрали ручной адрес: %s', ui.value);
+                    // DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
 
-                    $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
-                        .val(ui.item.jsonData.fullAddress)
+                    // $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
+                    //     .val(ui.item.jsonData.fullAddress)
                         
-                    // проверку запускать только при клике на кнопку
-                    localAddressInfo = {
-                        changed: true,
-                        fullAddress: ui.item.jsonData.fullAddress,
-                        street: ui.item.value,
-                        lat: ui.item.jsonData.lat, 
-                        lon: ui.item.jsonData.lon,
-                        jsonData: ui.item.jsonData
-                    }
-
-                    // ud.props.street = ui.item.value;
-                    // if(ud.props.suggestedAdres != ui.item.value){
-                    //     ud.props.suggestedAdres = ui.item.value;
-                    //     ud.props.department = null;
-                    // }
-                    // if(ui.item.jsonData.house){
-                    //     ud.props.jsonAddress = ui.item.jsonData;
+                    // // проверку запускать только при клике на кнопку
+                    // localAddressInfo = {
+                    //     changed: true,
+                    //     fullAddress: ui.item.jsonData.fullAddress,
+                    //     street: ui.item.value,
+                    //     lat: ui.item.jsonData.lat, 
+                    //     lon: ui.item.jsonData.lon,
+                    //     jsonData: ui.item.jsonData
                     // }
                 },
                 minLength: 3
