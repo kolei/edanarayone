@@ -1,4 +1,4 @@
-window.script_version = 113
+window.script_version = 114
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -831,13 +831,13 @@ $(document).ready(function ()
         
         var arrayResult = [];
 
-        function firstTwoParts (value) {
-          const parts = value.split(',')
-          let res = ''
-          if (parts.length > 0) res += parts[0]
-          if (parts.length > 1) res += ', ' + parts[1]
-          return res
-        }
+        // function firstTwoParts (value) {
+        //   const parts = value.split(',')
+        //   let res = ''
+        //   if (parts.length > 0) res += parts[0]
+        //   if (parts.length > 1) res += ', ' + parts[1]
+        //   return res
+        // }
     
         items.forEach(i => {
           let displayName = ''
@@ -845,7 +845,7 @@ $(document).ready(function ()
             // отрезаю населённый пункт
             let parts = i.displayName.split(',')
             parts.pop()
-            displayName = firstTwoParts(i.value) //parts.join(',')
+            displayName = parts.join(',')
             arrayResult.push({displayName, value: i.value})
           }
         })
@@ -888,7 +888,7 @@ $(document).ready(function ()
                 // при выборе варианта делю улицу и дом
                 select: function(event, ui){
                     console.log('try geocode: %s', JSON.stringify(ui))
-                    ymaps.geocode(ui.value, { boundedBy: moscowBound }).then(gc=>{
+                    ymaps.geocode(ui.item.value, { boundedBy: moscowBound }).then(gc=>{
                         let res = prepeareGC(gc, ui.value)
 
                         DEV_MODE && console.log('jsonData = %s', JSON.stringify(res.jsonData));
