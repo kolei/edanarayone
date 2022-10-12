@@ -1,4 +1,4 @@
-window.script_version = 3
+window.script_version = 4
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -1249,7 +1249,7 @@ $(document).ready(function ()
                 data: sentData
             }).done(function(rawData){
                 console.log('checkAddress: %s', rawData);
-                let data = JSON.parse( rawData );
+                let data = rawData;
                 let chaihona_pay = $('#chaihona_pay');
                 if(data.error){
                     chaihona_pay.attr('allow_pay', 'false')
