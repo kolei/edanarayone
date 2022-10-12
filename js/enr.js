@@ -1,4 +1,4 @@
-window.script_version = 5
+window.script_version = 6
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -775,6 +775,33 @@ $(document).ready(function ()
             $(`<form action="${window.CHAIHONA _HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
             */
 
+            dishes = []
+
+            $("div.t706__product").each(function(){
+                let dish_name = $(this).find('div.t706__product-title a').text()
+                dish_name = dish_name.replace(/\"/g, "'")
+                if(dish_name) dish_name = dish_name.trim()
+                
+                // в эту же кучу добавился модификатор, SKU пока последним элементом
+                let sku = $(this).find('div.t706__product-title__option:last-child').text();
+
+                // ищу модификатор, он перед SKU
+                let modif = $('div.t706__product-title__option > div', this).text();
+
+                let quantity = $(this).find('div.t706__product-plusminus span.t706__product-quantity').text();
+                let total = $(this).find('div.t706__product-amount').text();
+                // params += `<input type="hidden" name="dish[]" value="${sku}|${dish_name}|${quantity}|${total}|${modif}"/>`;
+                dishes.push([
+                    {
+                        code: sku,
+                        name: dish_name,
+                        quantity,
+                        total,
+                        modifName: modif
+                    }
+                ])     
+            })
+
             $('#chaihona_pay').attr('processing','1')
 
             $.ajax({
@@ -782,22 +809,30 @@ $(document).ready(function ()
                 type: 'POST',
                 crossDomain: true,
                 data: {
-                    city: null,
-                    street: null, 
-                    house: null,
+                    phone: purePhone,
+                    name: ud.props.name,
+                    email: ud.props.email,
+                    persons: persons,
+                    city: ud.props.jsonAddress.city,
+                    street: ud.props.jsonAddress.street,
+                    house: ud.props.jsonAddress.house,
+                    flat: ud.props.flat,
+                    department: ud.props.department,
+                    total: total_price,
+                    payment: payment,
+                    delivery_time,
+                    lat: ud.props.jsonAddress.lat,
+                    lon: ud.props.jsonAddress.lon,
+                    coment: comment,
+                    fullAddress: ud.props.jsonAddress.fullAddress,
                     brand: window.BRAND_CODE,
-                    fullAddress,
-                    lat,
-                    lon,
-                    doc_date,
-                    superBrand: 'eda_na_raione'
+                    dish: dishes
                 },
                 success: function(rawData){
-                    resolve(rawData)    
+                    console.log('make-order success: %s', JSON.stringify(rawData))
                 },
                 error: function(err){
-                    console.log('checkLocalAddress error: %s', JSON.stringify(err))
-                    reject(err)
+                    console.warn('make-order error: %s', JSON.stringify(err))
                 }
             })
         }
