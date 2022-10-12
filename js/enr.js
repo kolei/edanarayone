@@ -1,4 +1,4 @@
-window.script_version = 201
+window.script_version = 001
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -319,7 +319,7 @@ $(document).ready(function ()
         // TODO показать ошибку
     }
 
-    console.log('v1.%s%s, HOST = %s, tilda form_id = %s', 
+    console.log('v2.%s%s, HOST = %s, tilda form_id = %s', 
         window.script_version, 
         DEV_MODE ? '(dev)' : '',
         window.CHAIHONA_HOST, 
@@ -419,13 +419,26 @@ $(document).ready(function ()
             document.head.appendChild(script);
         }
     
+        // TODO ключ яндекса получать из апи
         if(typeof ymaps == 'undefined' || typeof ymaps.suggest == 'undefined'){
-            //DEV_MODE && console.log('ymaps or ymaps.suggest undefined, load script');
-            let script = document.createElement('script');
-            script.async = false;
-            script.onload = onYmapsReady;
-            script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=9cf52b96-70cc-4eab-81a3-53ffdd4850e2';
-            document.head.appendChild(script);
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/app/api-key?device=eda_na_raione`,
+                type: 'GET',
+                crossDomain: true,
+                success: function(rawData){
+                    console.log('ymaps key: %s', rawData);
+                    let jsonData = JSON.parse(rawData)
+                    let script = document.createElement('script');
+                    script.async = false;
+                    script.onload = onYmapsReady;
+                    script.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${jsonData.data}`;
+                    document.head.appendChild(script);
+                },
+                error: function(err){
+                    console.log('api-key error: %s', JSON.stringify(err))
+                    reject(err)
+                }
+            })
         } 
         else onYmapsReady();
 

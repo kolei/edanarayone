@@ -1,6 +1,9 @@
 @CHAIHONA_API=https://api.kei.chaihona1.ru/api/v1
 @mapi_kei=https://mapi.kei.chaihona1.ru
 
+###
+GET {{CHAIHONA_API}}/app/api-key?device=eda_na_raione
+
 ### Запрос актуального меню
 POST {{CHAIHONA_API}}/tilda/get-actual-sku
 Content-Type: application/json
