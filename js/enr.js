@@ -1,4 +1,4 @@
-window.script_version = 4
+window.script_version = 5
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -1248,9 +1248,9 @@ $(document).ready(function ()
                 crossDomain: true,
                 data: sentData
             }).done(function(rawData){
-                console.log('checkAddress: %s', rawData);
-                let data = rawData;
-                let chaihona_pay = $('#chaihona_pay');
+                console.log('checkAddress: %s', JSON.stringify(rawData))
+                let data = rawData
+                let chaihona_pay = $('#chaihona_pay')
                 if(data.error){
                     chaihona_pay.attr('allow_pay', 'false')
                     // реальную ошибку пишу в консоль, на экран всегда одну...
