@@ -1,4 +1,4 @@
-window.script_version = 200
+window.script_version = 201
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -359,6 +359,7 @@ $(document).ready(function ()
             crossDomain: true,
             data: {brandCode: window.BRAND_CODE}
         }).done(function(rawData){
+            console.log('actual sku RAW: %s', JSON.stringify(rawData))
 
             // let actualSKU = rawData
             let actualSKU = JSON.parse(rawData)
