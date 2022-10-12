@@ -1,4 +1,4 @@
-window.script_version = 001
+window.script_version = 2
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -362,7 +362,7 @@ $(document).ready(function ()
             console.log('actual sku RAW: %s', JSON.stringify(rawData))
 
             // let actualSKU = rawData
-            let actualSKU = JSON.parse(rawData)
+            let actualSKU = rawData
 
             console.log('actual sku: %s', JSON.stringify(actualSKU))
 
@@ -426,8 +426,8 @@ $(document).ready(function ()
                 type: 'GET',
                 crossDomain: true,
                 success: function(rawData){
-                    console.log('ymaps key: %s', rawData);
-                    let jsonData = JSON.parse(rawData)
+                    console.log('ymaps key: %s', JSON.stringify(rawData));
+                    let jsonData = rawData
                     let script = document.createElement('script');
                     script.async = false;
                     script.onload = onYmapsReady;
