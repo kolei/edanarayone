@@ -1,4 +1,4 @@
-window.script_version = 2
+window.script_version = 3
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -357,14 +357,14 @@ $(document).ready(function ()
             url: `${window.CHAIHONA_HOST}/tilda/get-actual-sku`,    // !!
             type: 'POST',
             crossDomain: true,
-            data: {brandCode: window.BRAND_CODE}
+            data: {BrandCode: window.BRAND_CODE}
         }).done(function(rawData){
-            console.log('actual sku RAW: %s', JSON.stringify(rawData))
+            // console.log('actual sku RAW: %s', JSON.stringify(rawData))
 
             // let actualSKU = rawData
             let actualSKU = rawData
 
-            console.log('actual sku: %s', JSON.stringify(actualSKU))
+            // console.log('actual sku: %s', JSON.stringify(actualSKU))
 
             if(typeof actualSKU == 'object'){
                 // console.log('actual sku is object')
@@ -426,7 +426,7 @@ $(document).ready(function ()
                 type: 'GET',
                 crossDomain: true,
                 success: function(rawData){
-                    console.log('ymaps key: %s', JSON.stringify(rawData));
+                    // console.log('ymaps key: %s', JSON.stringify(rawData));
                     let jsonData = rawData
                     let script = document.createElement('script');
                     script.async = false;
