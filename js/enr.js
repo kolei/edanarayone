@@ -1,4 +1,4 @@
-window.script_version = 7
+window.script_version = 8
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -791,15 +791,13 @@ $(document).ready(function ()
                 let quantity = $(this).find('div.t706__product-plusminus span.t706__product-quantity').text();
                 let total = $(this).find('div.t706__product-amount').text();
                 // params += `<input type="hidden" name="dish[]" value="${sku}|${dish_name}|${quantity}|${total}|${modif}"/>`;
-                dishes.push([
-                    {
-                        code: sku,
-                        name: dish_name,
-                        quantity,
-                        total,
-                        modifName: modif
-                    }
-                ])     
+                dishes.push({
+                    code: sku,
+                    name: dish_name,
+                    quantity,
+                    total,
+                    modifName: modif
+                })     
             })
 
             $('#chaihona_pay').attr('processing','1')
