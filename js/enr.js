@@ -1,4 +1,4 @@
-window.script_version = 115
+window.script_version = 200
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -312,17 +312,14 @@ $(document).ready(function ()
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        window.CHAIHONA_HOST = 'https://chaihona1.ru'
+        window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
         // DEV_MODE = false // !!
     }
-    else if(window.location.hostname == 'eda_na_raione.ru'){
-        window.CHAIHONA_HOST = 'https://kei.chaihona1.ru'
-    }
     else {
-        window.CHAIHONA_HOST = 'https://tilda.dev.chaihona1.ru'
+        // TODO показать ошибку
     }
 
-    console.log('v1.%s%s, CHAIHONA_HOST = %s, tilda form_id = %s', 
+    console.log('v1.%s%s, HOST = %s, tilda form_id = %s', 
         window.script_version, 
         DEV_MODE ? '(dev)' : '',
         window.CHAIHONA_HOST, 
@@ -357,8 +354,8 @@ $(document).ready(function ()
 
         // запрашиваем актуальное меню
         $.ajax({
-            url: `${window.CHAIHONA_HOST}/tilda-actual-menu`,
-            type: 'GET',
+            url: `${window.CHAIHONA_HOST}/tilda/get-actual-sku`,    // !!
+            type: 'POST',
             crossDomain: true,
             data: {brandCode: window.BRAND_CODE}
         }).done(function(rawData){
@@ -366,7 +363,7 @@ $(document).ready(function ()
             // let actualSKU = rawData
             let actualSKU = JSON.parse(rawData)
 
-            // console.log('actual sku: %s', JSON.stringify(actualSKU))
+            console.log('actual sku: %s', JSON.stringify(actualSKU))
 
             if(typeof actualSKU == 'object'){
                 // console.log('actual sku is object')
@@ -723,6 +720,7 @@ $(document).ready(function ()
                 comment = ''                
             }
 
+            /*
             let params=`<input type="hidden" name="phone" value="${purePhone}"/>
                 <input type="hidden" name="name" value="${ud.props.name}"/>
                 <input type="hidden" name="email" value="${ud.props.email}"/>
@@ -760,7 +758,34 @@ $(document).ready(function ()
             // запрет повторного клика
             $('#chaihona_pay').attr('processing','1')
 
-            $(`<form action="${window.CHAIHONA_HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
+            $(`<form action="${window.CHAIHONA _HOST}/eda-na-raione" method="POST">${params}</form>`).appendTo($(document.body)).submit();
+            */
+
+            $('#chaihona_pay').attr('processing','1')
+
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/tilda/make-order`,
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    city: null,
+                    street: null, 
+                    house: null,
+                    brand: window.BRAND_CODE,
+                    fullAddress,
+                    lat,
+                    lon,
+                    doc_date,
+                    superBrand: 'eda_na_raione'
+                },
+                success: function(rawData){
+                    resolve(rawData)    
+                },
+                error: function(err){
+                    console.log('checkLocalAddress error: %s', JSON.stringify(err))
+                    reject(err)
+                }
+            })
         }
     }
 
@@ -887,12 +912,12 @@ $(document).ready(function ()
                 source: ymapsSource,
                 // при выборе варианта делю улицу и дом
                 select: function(event, ui){
-                    console.log('try geocode: %s', JSON.stringify(ui))
+                    // console.log('try geocode: %s', JSON.stringify(ui))
                     ymaps.geocode(ui.item.value, { boundedBy: moscowBound }).then(gc=>{
-                        console.log('try prepeareGC')
+                        // console.log('try prepeareGC')
                         let res = prepeareGC(gc, ui.item.value)
 
-                        console.log('prepeareGC res = %s', JSON.stringify(res))
+                        // console.log('prepeareGC res = %s', JSON.stringify(res))
                         DEV_MODE && console.log('jsonData = %s', JSON.stringify(res.jsonData));
 
                         ud.props.street = res.value;
@@ -927,7 +952,7 @@ $(document).ready(function ()
             $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]').autocomplete({
                 source: ymapsSource,
                 select: function(event, ui){
-                    console.warn('выбрали ручной адрес: %s', ui.value);
+                    console.warn('выбрали ручной адрес: %s', JSON.stringify(ui))
                     // DEV_MODE && console.log('выбрали ручной адрес: ui.item.jsonData = %s', JSON.stringify(ui.item.jsonData));
 
                     // $('div[data-tooltip-hook="#popup:getadress"] input[name="adress"]')
@@ -1119,13 +1144,10 @@ $(document).ready(function ()
             doc_date = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} 18:00`
 
             $.ajax({
-                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
-                type: 'GET',
+                url: `${window.CHAIHONA_HOST}/tilda/checkDelivery`,
+                type: 'POST',
                 crossDomain: true,
                 data: {
-                    city: null,
-                    street: null, 
-                    house: null,
                     brand: window.BRAND_CODE,
                     fullAddress,
                     lat,
@@ -1207,8 +1229,8 @@ $(document).ready(function ()
             
             // запрашиваем возможность доставки у АПИ
             $.ajax({
-                url: `${window.CHAIHONA_HOST}/eda-na-raione`,
-                type: 'GET',
+                url: `${window.CHAIHONA_HOST}/tilda/checkDelivery`,
+                type: 'POST',
                 crossDomain: true,
                 data: sentData
             }).done(function(rawData){

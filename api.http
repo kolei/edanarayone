@@ -1,0 +1,60 @@
+@CHAIHONA_API=https://api.kei.chaihona1.ru/api/v1
+@mapi_kei=https://mapi.kei.chaihona1.ru
+
+### Запрос актуального меню
+POST {{CHAIHONA_API}}/tilda/get-actual-sku
+Content-Type: application/json
+
+{"BrandCode": 100000012}
+
+### Проверка адреса
+POST {{CHAIHONA_API}}/tilda/checkDelivery
+Content-Type: application/json
+
+{
+    "brand": 100000012,
+    "fullAddress": "Россия, Москва, проспект Вернадского, 105",
+    "lat": 55.662882,
+    "lon": 37.48561,
+    "doc_date": "2022-10-12 18:00",
+    "superBrand": "eda_na_raione"
+}
+
+
+### оформление заказа
+POST {{CHAIHONA_API}}/tilda/make-order
+Origin: https://edanarayone.ru
+Content-Type: application/json
+
+{
+    "phone": "9177018917",
+    "name": "Евгений",
+    "email": "kolei@ya.ru",
+    "persons": 1,
+    "city": "Москва",
+    "street": "проспект Вернадского",
+    "house": "105",
+    "flat": "1",
+    "department": "100000100",
+    "total": "2 480",
+    "payment": "proekt-eda-rubli",
+    "delivery_time": null,
+    "lat": 55.662882,
+    "lon": 37.48561,
+    "coment": "НЕ ОФОРМЛЯТЬ",
+    "fullAddress": "Россия, Москва, проспект Вернадского, 105",
+    "brand": "100000012",
+    "dish": [
+        {
+            "code": "3600000128",
+            "name": "Долма",
+            "quantity": 4,
+            "total": "2 480",
+            "modifName": "Модификатор: Без бульона"
+        }
+    ]
+}
+
+###
+GET {{mapi_kei}}/api/v1/cart
+CartToken: tildaTest
