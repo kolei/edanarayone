@@ -1,4 +1,4 @@
-window.script_version = 17
+window.script_version = 18
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -295,19 +295,19 @@ $(document).ready(function ()
     window.BRAND_CODE = '100000012';
 
     // кириллические УРЛ-ы выглядят не так как пишутся...
-    console.log('hostname: %s', window.location.hostname)
+    // console.log('hostname: %s', window.location.hostname)
 
     let form = $('div.t706__cartwin-content form')
     if(form){
         try {
             tilda_form_id = form.get(0).id
-            console.log('form id = %s', tilda_form_id)
+            // console.log('form id = %s', tilda_form_id)
         } catch (error) {
-            console.log('not found form id')
+            console.warn('not found form id')
         }
     }
     else
-        console.log('not found form id')
+        console.warn('not found form id')
 
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
@@ -338,10 +338,6 @@ $(document).ready(function ()
 
     var errorSet = new Set()
    
-    // if( window.location.pathname == '/' || 
-    //     window.location.pathname == '/eda' || 
-    //     window.location.pathname == '/express' ||
-    //     window.location.pathname == '/express/') processRoot();
     if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess()
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError()
     else processRoot()
@@ -612,7 +608,7 @@ $(document).ready(function ()
                 elementWatchers = [];
 
                 hideSKU();
-                $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).hide()
+                $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).parent().hide()
 
                 // при удалении/изменении блюда пересоздается t706__cartwin-products
                 // наблюдатели за конкретными элементами не работают - смотрю на весь список
