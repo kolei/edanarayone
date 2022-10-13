@@ -1,4 +1,4 @@
-window.script_version = 10
+window.script_version = 11
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -835,7 +835,7 @@ $(document).ready(function ()
                 error: function(err){
                     console.warn('make-order error: %s', JSON.stringify(err))
                     $('#chaihona_pay').removeAttr('processing')
-                    showModal(JSON.stringify(err))
+                    showModal(err.responseJSON)
                 }
             })
         }
@@ -955,10 +955,11 @@ $(document).ready(function ()
     }
 
     function onJqueryUiReady () {
-        $(`#${tilda_form_id}`).append(`
+        $('body').append(`
             <div 
                 id="dialog" 
                 title="Внимание!"
+                z-index="20000000"
             >
             </div>`
         )
