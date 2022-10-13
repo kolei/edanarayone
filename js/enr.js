@@ -1,4 +1,4 @@
-window.script_version = 15
+window.script_version = 16
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -445,6 +445,7 @@ $(document).ready(function ()
         else onYmapsReady();
 
         //TODO вывести информацию о невозможности оплаты онлайн - проверить
+        $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).hide()
 
         try {
             // штатную кнопку скрываю
@@ -829,8 +830,8 @@ $(document).ready(function ()
                     dish: dishes
                 },
                 success: function(rawData){
-                    console.log('make-order success: %s', JSON.stringify(rawData))
-                    window.location.href = `/success?order=${rawData.order}`
+                    // console.log('make-order success: %s', JSON.stringify(rawData))
+                    window.location.href = `/success?order=${rawData.code}`
                 },
                 error: function(err){
                     console.warn('make-order error: %s', JSON.stringify(err))
@@ -1330,7 +1331,6 @@ $(document).ready(function ()
 
                         // показываю СВОЮ кнопку "оплатить"
                         chaihona_pay.attr('allow_pay', 'true');
-                        $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
 
                         if(!data.online_payment){
                             $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true);
