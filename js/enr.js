@@ -1,4 +1,4 @@
-window.script_version = 13
+window.script_version = 15
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -830,7 +830,7 @@ $(document).ready(function ()
                 },
                 success: function(rawData){
                     console.log('make-order success: %s', JSON.stringify(rawData))
-                    $('#chaihona_pay').removeAttr('processing')
+                    window.location.href = `/success?order=${rawData.order}`
                 },
                 error: function(err){
                     console.warn('make-order error: %s', JSON.stringify(err))
@@ -1330,6 +1330,8 @@ $(document).ready(function ()
 
                         // показываю СВОЮ кнопку "оплатить"
                         chaihona_pay.attr('allow_pay', 'true');
+                        $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
+
                         if(!data.online_payment){
                             $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true);
                             $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
