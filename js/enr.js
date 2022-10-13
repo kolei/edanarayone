@@ -1,4 +1,4 @@
-window.script_version = 9
+window.script_version = 10
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -317,6 +317,7 @@ $(document).ready(function ()
     }
     else {
         // TODO показать ошибку
+        window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
     }
 
     console.log('v2.%s%s, HOST = %s, tilda form_id = %s', 
@@ -416,6 +417,7 @@ $(document).ready(function ()
             let script = document.createElement('script');
             script.async = false;
             script.src = 'https://code.jquery.com/ui/1.12.1/jquery-ui.js';
+            script.onload = onJqueryUiReady;
             document.head.appendChild(script);
         }
     
@@ -833,6 +835,7 @@ $(document).ready(function ()
                 error: function(err){
                     console.warn('make-order error: %s', JSON.stringify(err))
                     $('#chaihona_pay').removeAttr('processing')
+                    showModal(JSON.stringify(err))
                 }
             })
         }
@@ -949,6 +952,25 @@ $(document).ready(function ()
 
         // //response( availableTags);
         // response( arrayResult );
+    }
+
+    function onJqueryUiReady () {
+        $(`#${tilda_form_id}`).append(`
+            <div 
+                id="dialog" 
+                title="Внимание!"
+            >
+            </div>`
+        )
+        $('#dialog').dialog({
+            autoOpen: false,
+            modal: true
+        })
+    }
+
+    function showModal(text) {
+        $('#dialog').html(text)
+        $('#dialog').dialog('open')
     }
 
     function onYmapsReady(){
