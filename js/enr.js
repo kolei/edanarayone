@@ -1,4 +1,4 @@
-window.script_version = 16
+window.script_version = 17
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -445,7 +445,6 @@ $(document).ready(function ()
         else onYmapsReady();
 
         //TODO вывести информацию о невозможности оплаты онлайн - проверить
-        $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).hide()
 
         try {
             // штатную кнопку скрываю
@@ -613,6 +612,7 @@ $(document).ready(function ()
                 elementWatchers = [];
 
                 hideSKU();
+                $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).hide()
 
                 // при удалении/изменении блюда пересоздается t706__cartwin-products
                 // наблюдатели за конкретными элементами не работают - смотрю на весь список
