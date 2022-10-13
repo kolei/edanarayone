@@ -1,4 +1,4 @@
-window.script_version = 12
+window.script_version = 13
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -835,7 +835,7 @@ $(document).ready(function ()
                 error: function(err){
                     console.warn('make-order error: %s', JSON.stringify(err))
                     $('#chaihona_pay').removeAttr('processing')
-                    showError(err.responseJSON)
+                    showBottomError(err.responseJSON, 'js-rule-error-string');
                 }
             })
         }
