@@ -1,4 +1,4 @@
-window.script_version = 19
+window.script_version = 20
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -608,7 +608,7 @@ $(document).ready(function ()
                 elementWatchers = [];
 
                 hideSKU();
-                $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).parent().hide()
+                // $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).parent().hide()
 
                 // при удалении/изменении блюда пересоздается t706__cartwin-products
                 // наблюдатели за конкретными элементами не работают - смотрю на весь список
@@ -799,42 +799,48 @@ $(document).ready(function ()
                 })     
             })
 
-            $('#chaihona_pay').attr('processing','1')
+            $('#popupzero-mywindow').show()
 
-            $.ajax({
-                url: `${window.CHAIHONA_HOST}/tilda/make-order`,
-                type: 'POST',
-                crossDomain: true,
-                data: {
-                    phone: purePhone,
-                    name: ud.props.name,
-                    email: ud.props.email,
-                    persons: persons,
-                    city: ud.props.jsonAddress.city,
-                    street: ud.props.jsonAddress.street,
-                    house: ud.props.jsonAddress.house,
-                    flat: ud.props.flat,
-                    department: ud.props.department,
-                    total: total_price,
-                    payment: payment,
-                    delivery_time,
-                    lat: ud.props.jsonAddress.lat,
-                    lon: ud.props.jsonAddress.lon,
-                    coment: comment,
-                    fullAddress: ud.props.jsonAddress.fullAddress,
-                    brand: window.BRAND_CODE,
-                    dish: dishes
-                },
-                success: function(rawData){
-                    // console.log('make-order success: %s', JSON.stringify(rawData))
-                    window.location.href = `/success?order=${rawData.code}`
-                },
-                error: function(err){
-                    console.warn('make-order error: %s', JSON.stringify(err))
-                    $('#chaihona_pay').removeAttr('processing')
-                    showBottomError(err.responseJSON, 'js-rule-error-string');
-                }
-            })
+            // $('#chaihona_pay').attr('processing','1')
+
+            // $.ajax({
+            //     url: `${window.CHAIHONA_HOST}/tilda/make-order`,
+            //     type: 'POST',
+            //     crossDomain: true,
+            //     data: {
+            //         phone: purePhone,
+            //         name: ud.props.name,
+            //         email: ud.props.email,
+            //         persons: persons,
+            //         city: ud.props.jsonAddress.city,
+            //         street: ud.props.jsonAddress.street,
+            //         house: ud.props.jsonAddress.house,
+            //         flat: ud.props.flat,
+            //         department: ud.props.department,
+            //         total: total_price,
+            //         payment: payment,
+            //         delivery_time,
+            //         lat: ud.props.jsonAddress.lat,
+            //         lon: ud.props.jsonAddress.lon,
+            //         coment: comment,
+            //         fullAddress: ud.props.jsonAddress.fullAddress,
+            //         brand: window.BRAND_CODE,
+            //         dish: dishes
+            //     },
+            //     success: function(rawData){
+            //         console.log('make-order success: %s', JSON.stringify(rawData))
+            //         if(payment == 'proekt-eda-online') {
+            //             // открыть форму ввода реквизитов карты
+            //         }
+            //         else
+            //             window.location.href = `/success?order=${rawData.code}`
+            //     },
+            //     error: function(err){
+            //         console.warn('make-order error: %s', JSON.stringify(err))
+            //         $('#chaihona_pay').removeAttr('processing')
+            //         showBottomError(err.responseJSON, 'js-rule-error-string');
+            //     }
+            // })
         }
     }
 
