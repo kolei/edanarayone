@@ -1,4 +1,4 @@
-window.script_version = 21
+window.script_version = 22
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -540,6 +540,7 @@ $(document).ready(function ()
         // поэтому невозможно переопределить ее поведение
 
         $(`div.t-form__submit`).hide()
+        $('a[href="#popupzero-mywindow"]').hide()
 
         // рисуем аналогичную кнопку для перехода на оплату в чайхону   
         $(`#${tilda_form_id} div.t-form__inputsbox`).append(`
@@ -799,7 +800,7 @@ $(document).ready(function ()
                 })     
             })
 
-            $('div[data-tooltip-hook="#popupzero-mywindow"]').show()
+            $('a[href="#popupzero-mywindow"]').trigger('click')
 
             // $('#chaihona_pay').attr('processing','1')
 
