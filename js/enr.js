@@ -1,4 +1,4 @@
-window.script_version = 25
+window.script_version = 26
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -312,8 +312,8 @@ $(document).ready(function ()
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        // window.CHAIHONA_HOST = 'https://api.dev.chaihona1.ru/api/v1'
-        window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
+        window.CHAIHONA_HOST = 'https://api.dev.chaihona1.ru/api/v1'
+        // window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
         // DEV_MODE = false // !!
     }
     else {
@@ -855,7 +855,13 @@ $(document).ready(function ()
         $('div.t706__product').each(function(){
             // SKU ПОКА последний div в куче
             $('div.t706__product-title div:last', this).hide();
-        });
+        })
+
+        let total_price = $('div.t706__cartwin-prodamount-wrap span.t706__cartwin-prodamount').text();
+        console.log('total_price = %s', total_price)
+        window.popupAmount = $('div[field="tn_text_1661345936823"]')
+        console.log(window.popupAmount)
+        window.popupAmount.text(`${total_price}₽`)
     }
 
     function processPaymentError(){
