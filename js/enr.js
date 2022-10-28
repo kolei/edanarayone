@@ -1,4 +1,4 @@
-window.script_version = 22
+window.script_version = 23
 var tilda_form_id = 'form347659861'
 var DEV_MODE = true
 var localAddressInfo = {changed:false}
@@ -800,7 +800,10 @@ $(document).ready(function ()
                 })     
             })
 
-            $('a[href="#popupzero-mywindow"]').trigger('click')
+
+            let href = $('a[href="#popupzero-mywindow"]')
+            console.log(href)
+            href.trigger('click')
 
             // $('#chaihona_pay').attr('processing','1')
 
