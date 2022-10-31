@@ -1,4 +1,4 @@
-window.script_version = 34
+window.script_version = 35
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -152,7 +152,7 @@ class UserData {
 
     allowSaveCookie(formId) {
         if (formId == tilda_form_id) return true
-        console.log('checkbox html: %s', $('input[name="savecard"]').html())
+        console.log('label html: %s', $('label.t-checkbox__control').html())
         return $('div.t-checkbox__indicator').children().length > 0
     }
 
