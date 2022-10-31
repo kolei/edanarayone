@@ -1,4 +1,4 @@
-window.script_version = 30
+window.script_version = 31
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -137,14 +137,22 @@ class UserData {
 
                 // при выходе с элемента запоминаю значение в куку
                 $(`#${form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
-                    let value = $(event.currentTarget).val()
-                    this.props[propName] = value
-                    console.log('property %s="%s"', propName, value)
-                });
+                    if(this.allowSaveCookie(form_id)) {
+                        let value = $(event.currentTarget).val()
+                        this.props[propName] = value
+                        console.log('property %s="%s"', propName, value)
+                    } else 
+                        console.log('remember disabled')
+                })
             }
         } catch (error) {
             DEV_MODE && console.log(error);            
         }
+    }
+
+    allowSaveCookie(formId) {
+        if (formId == tilda_form_id) return true
+        return $('div.t-checkbox__indicator').children().length > 0
     }
 
     el(elementName, tag = 'input'){
