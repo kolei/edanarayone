@@ -1,4 +1,4 @@
-window.script_version = 27
+window.script_version = 28
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -72,28 +72,28 @@ class UserData {
                 document.cookie = `flat=${this._flat}; max-age=31536000`;
             }
         },
-        // _pass: '', // домофон
-        // get pass(){
-        //     return decodeURIComponent( this._pass );
-        // },
-        // set pass(value){
-        //     if(typeof value != 'undefined' && this._pass != value){
-        //         this._pass = encodeURIComponent( value.trim() );
-        //         $(`#${tilda_form_id} input[name='pass']`).val(this.pass);
-        //         document.cookie = `pass=${this._pass}; max-age=31536000`;
-        //     }
-        // },
-        // _floor: '', // домофон
-        // get floor(){
-        //     return decodeURIComponent( this._floor );
-        // },
-        // set floor(value){
-        //     if(typeof value != 'undefined' && this._floor != value){
-        //         this._floor = encodeURIComponent( value.trim() );
-        //         $(`#${tilda_form_id} input[name='floor']`).val(this.floor);
-        //         document.cookie = `floor=${this._floor}; max-age=31536000`;
-        //     }
-        // },
+        _cardNumber: '', // домофон
+        get Input(){
+            return decodeURIComponent( this._cardNumber );
+        },
+        set Input(value){
+            if(typeof value != 'undefined' && this._cardNumber != value){
+                this._cardNumber = encodeURIComponent( value.trim() );
+                $(`#${tilda_form_id_online} input[name='Input']`).val(this.Input);
+                document.cookie = `pass=${this._cardNumber}; max-age=31536000`;
+            }
+        },
+        _cardDateExp: '', // домофон
+        get Input_2(){
+            return decodeURIComponent( this._cardDateExp );
+        },
+        set Input_2(value){
+            if(typeof value != 'undefined' && this._cardDateExp != value){
+                this._cardDateExp = encodeURIComponent( value.trim() );
+                $(`#${tilda_form_id_online} input[name='Input_2']`).val(this.Input_2);
+                document.cookie = `floor=${this._cardDateExp}; max-age=31536000`;
+            }
+        },
         _jsonAddress: null, // хранит JSON объект возвращаемый geocode, либо NULL, если адрес меняли вручную
         get jsonAddress(){
             return this._jsonAddress;
@@ -122,8 +122,8 @@ class UserData {
     - при изменении записывается в куки
     - при создании считывает из куки
     */
-    bindInput(propName, tag = 'input'){
-        let element = $(`#${tilda_form_id} ${tag}[name='${propName}']`);
+    bindInput(propName, tag = 'input', form_id = tilda_form_id){
+        let element = $(`#${form_id} ${tag}[name='${propName}']`);
         
         if(element)
         try {
@@ -136,7 +136,7 @@ class UserData {
                 this.props[propName] = value ? value : this.getCookie( propName )
 
                 // при выходе с элемента запоминаю значение в куку
-                $(`#${tilda_form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
+                $(`#${form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
                     let value = $(event.currentTarget).val()
                     this.props[propName] = value
                     // console.log('property %s="%s"', propName, value)
@@ -154,13 +154,13 @@ class UserData {
     //onChangeAddress = null;
 
     constructor(){
-        this.bindInput('phone');
-        this.bindInput('name');
-        this.bindInput('email');
-        this.bindInput('street');
-        this.bindInput('flat');
-        // this.bindInput('pass');
-        //this.bindInput('floor');
+        this.bindInput('phone')
+        this.bindInput('name')
+        this.bindInput('email')
+        this.bindInput('street')
+        this.bindInput('flat')
+        this.bindInput('Input', form_id = tilda_form_id_online) // cardNumber
+        this.bindInput('Input_2', form_id = tilda_form_id_online) // cardDateExpiries
 
         this.props.suggestedAdres = this.getCookie('suggestedAdres');
         if(this.props.suggestedAdres)
