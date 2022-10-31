@@ -1,4 +1,4 @@
-window.script_version = 29
+window.script_version = 30
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -80,7 +80,7 @@ class UserData {
             if(typeof value != 'undefined' && this._cardNumber != value){
                 this._cardNumber = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id_online} input[name='Input']`).val(this.Input);
-                document.cookie = `pass=${this._cardNumber}; max-age=31536000`;
+                document.cookie = `Input=${this._cardNumber}; max-age=31536000`;
             }
         },
         _cardDateExp: '', // домофон
@@ -91,7 +91,7 @@ class UserData {
             if(typeof value != 'undefined' && this._cardDateExp != value){
                 this._cardDateExp = encodeURIComponent( value.trim() );
                 $(`#${tilda_form_id_online} input[name='Input_2']`).val(this.Input_2);
-                document.cookie = `floor=${this._cardDateExp}; max-age=31536000`;
+                document.cookie = `Input_2=${this._cardDateExp}; max-age=31536000`;
             }
         },
         _jsonAddress: null, // хранит JSON объект возвращаемый geocode, либо NULL, если адрес меняли вручную
@@ -139,7 +139,7 @@ class UserData {
                 $(`#${form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
                     let value = $(event.currentTarget).val()
                     this.props[propName] = value
-                    // console.log('property %s="%s"', propName, value)
+                    console.log('property %s="%s"', propName, value)
                 });
             }
         } catch (error) {
