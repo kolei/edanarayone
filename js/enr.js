@@ -1,4 +1,4 @@
-window.script_version = 28
+window.script_version = 29
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -159,8 +159,8 @@ class UserData {
         this.bindInput('email')
         this.bindInput('street')
         this.bindInput('flat')
-        this.bindInput('Input', form_id = tilda_form_id_online) // cardNumber
-        this.bindInput('Input_2', form_id = tilda_form_id_online) // cardDateExpiries
+        this.bindInput('Input', 'input', tilda_form_id_online) // cardNumber
+        this.bindInput('Input_2', 'input', tilda_form_id_online) // cardDateExpiries
 
         this.props.suggestedAdres = this.getCookie('suggestedAdres');
         if(this.props.suggestedAdres)
