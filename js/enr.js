@@ -1,4 +1,4 @@
-window.script_version = 35
+window.script_version = 36
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -152,7 +152,11 @@ class UserData {
 
     allowSaveCookie(formId) {
         if (formId == tilda_form_id) return true
-        console.log('label html: %s', $('label.t-checkbox__control').html())
+        let checkbox = $('div.t-checkbox__indicator')[0]
+        if(checkbox) {
+            let stylearray = document.defaultView.getComputedStyle(checkbox, null)
+            console.log('checkbox style: %s', JSON.stringify(stylearray))
+        }
         return $('div.t-checkbox__indicator').children().length > 0
     }
 
