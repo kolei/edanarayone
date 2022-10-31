@@ -1,4 +1,4 @@
-window.script_version = 31
+window.script_version = 32
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -152,6 +152,7 @@ class UserData {
 
     allowSaveCookie(formId) {
         if (formId == tilda_form_id) return true
+        console.log('checkbox text: %s', $('div.t-checkbox__indicator').text())
         return $('div.t-checkbox__indicator').children().length > 0
     }
 
