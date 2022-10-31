@@ -1,4 +1,4 @@
-window.script_version = 37
+window.script_version = 38
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -157,8 +157,8 @@ class UserData {
         //     let stylearray = document.defaultView.getComputedStyle(checkbox, null)
         //     console.log('checkbox style: %s', JSON.stringify(stylearray))
         // }
-        console.log('checkbox opacity: %s', $('div.t-checkbox__indicator').css('opacity'))
-        return $('div.t-checkbox__indicator').children().length > 0
+        // console.log('checkbox opacity: %s', $('div.t-checkbox__indicator').css('opacity'))
+        return $('div.t-checkbox__indicator').css('opacity') == 1
     }
 
     el(elementName, tag = 'input'){
