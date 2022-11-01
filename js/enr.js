@@ -1,4 +1,4 @@
-window.script_version = 38
+window.script_version = 39
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -72,28 +72,28 @@ class UserData {
                 document.cookie = `flat=${this._flat}; max-age=31536000`;
             }
         },
-        _cardNumber: '', // домофон
-        get Input(){
-            return decodeURIComponent( this._cardNumber );
-        },
-        set Input(value){
-            if(typeof value != 'undefined' && this._cardNumber != value){
-                this._cardNumber = encodeURIComponent( value.trim() );
-                $(`#${tilda_form_id_online} input[name='Input']`).val(this.Input);
-                document.cookie = `Input=${this._cardNumber}; max-age=31536000`;
-            }
-        },
-        _cardDateExp: '', // домофон
-        get Input_2(){
-            return decodeURIComponent( this._cardDateExp );
-        },
-        set Input_2(value){
-            if(typeof value != 'undefined' && this._cardDateExp != value){
-                this._cardDateExp = encodeURIComponent( value.trim() );
-                $(`#${tilda_form_id_online} input[name='Input_2']`).val(this.Input_2);
-                document.cookie = `Input_2=${this._cardDateExp}; max-age=31536000`;
-            }
-        },
+        // _cardNumber: '', // домофон
+        // get Input(){
+        //     return decodeURIComponent( this._cardNumber );
+        // },
+        // set Input(value){
+        //     if(typeof value != 'undefined' && this._cardNumber != value){
+        //         this._cardNumber = encodeURIComponent( value.trim() );
+        //         $(`#${tilda_form_id_online} input[name='Input']`).val(this.Input);
+        //         document.cookie = `Input=${this._cardNumber}; max-age=31536000`;
+        //     }
+        // },
+        // _cardDateExp: '', // домофон
+        // get Input_2(){
+        //     return decodeURIComponent( this._cardDateExp );
+        // },
+        // set Input_2(value){
+        //     if(typeof value != 'undefined' && this._cardDateExp != value){
+        //         this._cardDateExp = encodeURIComponent( value.trim() );
+        //         $(`#${tilda_form_id_online} input[name='Input_2']`).val(this.Input_2);
+        //         document.cookie = `Input_2=${this._cardDateExp}; max-age=31536000`;
+        //     }
+        // },
         _jsonAddress: null, // хранит JSON объект возвращаемый geocode, либо NULL, если адрес меняли вручную
         get jsonAddress(){
             return this._jsonAddress;
@@ -137,28 +137,13 @@ class UserData {
 
                 // при выходе с элемента запоминаю значение в куку
                 $(`#${form_id} ${tag}[name='${propName}']`).blur((event)=>{ 
-                    if(this.allowSaveCookie(form_id)) {
-                        let value = $(event.currentTarget).val()
-                        this.props[propName] = value
-                        console.log('property %s="%s"', propName, value)
-                    } else 
-                        console.log('remember disabled')
+                    let value = $(event.currentTarget).val()
+                    this.props[propName] = value
                 })
             }
         } catch (error) {
             DEV_MODE && console.log(error);            
         }
-    }
-
-    allowSaveCookie(formId) {
-        if (formId == tilda_form_id) return true
-        // let checkbox = $('div.t-checkbox__indicator')[0]
-        // if(checkbox) {
-        //     let stylearray = document.defaultView.getComputedStyle(checkbox, null)
-        //     console.log('checkbox style: %s', JSON.stringify(stylearray))
-        // }
-        // console.log('checkbox opacity: %s', $('div.t-checkbox__indicator').css('opacity'))
-        return $('div.t-checkbox__indicator').css('opacity') == 1
     }
 
     el(elementName, tag = 'input'){
@@ -173,8 +158,6 @@ class UserData {
         this.bindInput('email')
         this.bindInput('street')
         this.bindInput('flat')
-        this.bindInput('Input', 'input', tilda_form_id_online) // cardNumber
-        this.bindInput('Input_2', 'input', tilda_form_id_online) // cardDateExpiries
 
         this.props.suggestedAdres = this.getCookie('suggestedAdres');
         if(this.props.suggestedAdres)
@@ -357,6 +340,10 @@ $(document).ready(function ()
     if(window.location.pathname == '/success' || window.location.pathname == '/success/') processSuccess()
     else if(window.location.pathname == '/paymenterror' || window.location.pathname == '/paymenterror/') processPaymentError()
     else processRoot()
+
+    function allowSaveCookie(formId) {
+        return $(`#${formId} div.t-checkbox__indicator`).css('opacity') == 1
+    }
 
     function processRoot(){
         try {
@@ -656,6 +643,17 @@ $(document).ready(function ()
                     );
             }, null);
 
+        winsow.online_pay = function() {
+            console.log('online_pay clicked...')
+            if (ud.allowSaveCookie(tilda_form_id_online)) {
+                console.log('save allowed, try save card params')
+                let cardNumber = $(`#${tilda_form_id_online} input[name='Input']`).val()
+                document.cookie = `cardNumber=${cardNumber}; max-age=31536000`
+                let cardExpiries = $(`#${tilda_form_id_online} input[name='Input_2']`).val()
+                document.cookie = `cardExpiries=${cardExpiries}; max-age=31536000`
+            }
+        }
+
         // кликнули на оплатить, проверка полей и редирект в чайхону
         window.chaihona_pay_click = function()
         {
@@ -832,6 +830,17 @@ $(document).ready(function ()
                 })     
             })
 
+            let cardNumber = ud.getCookie( 'cardNumber' )
+            if (cardNumber) 
+                $(`#${tilda_form_id_online} input[name='Input']`).val(cardNumber);
+
+            let cardExpiries = ud.getCookie( 'cardExpiries' )
+            if (cardExpiries) 
+                $(`#${tilda_form_id_online} input[name='Input_2']`).val(cardExpiries);
+
+            // this.bindInput('Input', 'input', tilda_form_id_online) // cardNumber
+            // this.bindInput('Input_2', 'input', tilda_form_id_online) // cardDateExpiries
+    
             $('a[href="#popupzero-mywindow"]')[0].click()
 
             // $('#chaihona_pay').attr('processing','1')
