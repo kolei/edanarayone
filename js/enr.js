@@ -1,4 +1,4 @@
-window.script_version = 39
+window.script_version = 40
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -643,7 +643,7 @@ $(document).ready(function ()
                     );
             }, null);
 
-        winsow.online_pay = function() {
+        window.online_pay = function() {
             console.log('online_pay clicked...')
             if (ud.allowSaveCookie(tilda_form_id_online)) {
                 console.log('save allowed, try save card params')
