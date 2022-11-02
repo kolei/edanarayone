@@ -1,4 +1,4 @@
-window.script_version = 42
+window.script_version = 43
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -556,21 +556,6 @@ $(document).ready(function ()
                 
             </div>`);
 
-        $(`div.tn-form__submit`).hide() // кнопка онлайн оплаты в попапе
-        // рисуем аналогичную кнопку для перехода на онлайн оплату
-        // style="text-align:center;vertical-align:middle;height:100%;margin-top:30px;margin-bottom:10px;width:100%;"
-        $(`#${tilda_form_id_online} div.t-form__inputsbox`).append(`
-            <div 
-                id="online_pay" 
-            >
-                <button 
-                    onclick="window.online_pay_click();return false;"
-                    style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width:300px;height:64px;padding:0 15px;display:block;"
-                >
-                    Оплатить
-                </button>
-            </div>`);
-
         $('a[href="#popupzero-mywindow"]').hide()
     
         ud.el('street').change(function(){ 
@@ -640,7 +625,7 @@ $(document).ready(function ()
             }, null);
 
         function allowSaveCookie(formId) {
-            return $(`#${formId} div.t-checkbox__indicator`).css('opacity') == 1
+            return $('div.t-checkbox__indicator').css('opacity') == 1
         }
         
         window.online_pay_click = function() {
@@ -651,6 +636,8 @@ $(document).ready(function ()
                 document.cookie = `cardNumber=${cardNumber}; max-age=31536000`
                 let cardExpiries = $(`#${tilda_form_id_online} input[name='Input_2']`).val()
                 document.cookie = `cardExpiries=${cardExpiries}; max-age=31536000`
+            } else {
+                console.log('save not allowed')
             }
         }
 
@@ -840,6 +827,25 @@ $(document).ready(function ()
 
             // this.bindInput('Input', 'input', tilda_form_id_online) // cardNumber
             // this.bindInput('Input_2', 'input', tilda_form_id_online) // cardDateExpiries
+    
+
+            if($(`#online_pay`).length == 0) {
+                console.log('try hide old online button and add self')
+                $(`div.tn-form__submit`).hide() // кнопка онлайн оплаты в попапе
+                $(`#${tilda_form_id_online} div.t-form__inputsbox`).append(`
+                    <div 
+                        id="online_pay" 
+                    >
+                        <button 
+                            onclick="window.online_pay_click();return false;"
+                            style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width:300px;height:64px;padding:0 15px;display:block;"
+                        >
+                            Оплатить
+                        </button>
+                    </div>`)
+            } else {
+                console.log('online_pay already has')
+            }
     
             $('a[href="#popupzero-mywindow"]')[0].click()
 
