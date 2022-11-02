@@ -1,4 +1,4 @@
-window.script_version = 43
+window.script_version = 44
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -628,17 +628,131 @@ $(document).ready(function ()
             return $('div.t-checkbox__indicator').css('opacity') == 1
         }
         
-        window.online_pay_click = function() {
+        window.online_pay_click = async () => {
             console.log('online_pay clicked...')
-            if (allowSaveCookie(tilda_form_id_online)) {
-                console.log('save allowed, try save card params')
-                let cardNumber = $(`#${tilda_form_id_online} input[name='Input']`).val()
-                document.cookie = `cardNumber=${cardNumber}; max-age=31536000`
-                let cardExpiries = $(`#${tilda_form_id_online} input[name='Input_2']`).val()
-                document.cookie = `cardExpiries=${cardExpiries}; max-age=31536000`
-            } else {
-                console.log('save not allowed')
+            try {
+                const cardNumber = $(`#${tilda_form_id_online} input[name='Input']`).val()
+                const cardExpiries = $(`#${tilda_form_id_online} input[name='Input_2']`).val()
+                if (allowSaveCookie(tilda_form_id_online)) {
+                    // console.log('save allowed, try save card params')
+                    document.cookie = `cardNumber=${cardNumber}; max-age=31536000`
+                    document.cookie = `cardExpiries=${cardExpiries}; max-age=31536000`
+                } else {
+                    // console.log('save not allowed')
+                }
+
+                const orderInfo = localStorage.getItem('order_info')
+                if (orderInfo == null)
+                    // потерял параметры платежа
+                    throw new Error('Потерял информацию о заказе, попробуйте ещё раз не перезагружая страницу')
+
+                const orderJson = JSON.parse(orderInfo)
+                await makeCryptogramCreationScript()
+
+                const cryptogrammScript = new cp.Checkout(orderJson.payParams.Login)
+                const cardCVV = $(`#${tilda_form_id_online} input[name='Input_3']`).val()
+        
+                const params = {
+                    cardNumber: cardNumber,
+                    expDateMonth: cardExpiries.substring(0, 2),
+                    expDateYear: cardExpiries.substring(3, 5),
+                    cvv: cardCVV,
+                    name: ''
+                }
+
+                console.log('try createCryptogramPacket with %s', JSON.stringify(params))
+
+                const result = cryptogrammScript.createCryptogramPacket(params)
+
+                console.log('createCryptogramPacket result = %s', JSON.stringify(result))
+    
+                if (result.success) {
+                    const ppParams = {
+                        name: '',
+                        cardCryptogramPacket: result.packet,
+                        orderId: orderJson.id
+                    }
+                    console.log('createCryptogramPacket success, try paymentAttempt with %s', JSON.stringify(ppParams))
+                    try {
+                        // ppRes => {"PaReq":"...", "MD": 111, "AscUrl":""}
+                        const ppRes = await api.paymentProcess(ppParams)
+                        console.log('paymentProcess result: %s', JSON.stringify(ppRes))
+                        if (typeof ppRes.AcsUrl === 'string') {
+                            // console.log('try 3ds auth %s, apiUrl=%s, orderId=%s, cartToken=%s',
+                            // ppRes.AcsUrl, apiUrl.value, orderProcess.code, cartToken.value)
+                            // // https://developers.cloudpayments.ru/#obrabotka-3-d-secure
+                            // const paymentProcessUrl = `${apiUrl.value}/3ds-confirm/ch1/${orderProcess.code}/${cartToken.value}`
+        
+                            // console.log('требуется 3DS аутентификация, callback url = %s', paymentProcessUrl)
+                            // formPostRequest(ppRes.AcsUrl, {
+                            // PaReq: ppRes.PaReq,
+                            // MD: ppRes.MD,
+                            // TermUrl: paymentProcessUrl
+                            // })
+                            // // не прекращаю крутить
+                            // loadingAfterPay = true
+                            // // TODO перейти на окно ожидания оплаты и либо вебхуком, либо опросом получать статус из апи
+                        } else {
+                            console.log('Онлайн оплата успешно проведена')
+                            window.location.href = `/success?order=${orderJson.code}`
+                        }
+                    } catch (error) {
+                        console.warn('paymentProcess error: %s', extractErrorMessage(error))
+                        throw error
+                    }
+                } else {
+                    // TODO не реализовано
+                    throw new Error(JSON.stringify(result))
+                }
+            } catch (error) {
+                window.location.href = `/paymenterror?message=${extractErrorMessage(error)}`
             }
+        }
+
+        function extractErrorMessage (error) {
+            if (typeof error === 'object') {
+              if (typeof error.data === 'object') {
+                if (typeof error.data.message === 'string') {
+                  return error.data.message
+                }
+              } else {
+                console.log('[extractErrorMessage] typeof error.data = "%s"', typeof error.data)
+              }
+            } else {
+              console.log('[extractErrorMessage] typeof error = "%s"', typeof error)
+            }
+            return JSON.stringify(error)
+        }
+          
+        function onlinePayFlow(){
+            console.log('try onlinePayFlow...')
+            let cardNumber = ud.getCookie( 'cardNumber' )
+            if (cardNumber) 
+                $(`#${tilda_form_id_online} input[name='Input']`).val(cardNumber);
+
+            let cardExpiries = ud.getCookie( 'cardExpiries' )
+            if (cardExpiries) 
+                $(`#${tilda_form_id_online} input[name='Input_2']`).val(cardExpiries);
+
+            if($(`#online_pay`).length == 0) {
+                // console.log('try hide old online button and add self')
+                $(`div.tn-form__submit`).hide() // кнопка онлайн оплаты в попапе
+                $(`#${tilda_form_id_online} div.t-form__inputsbox`).append(`
+                    <div 
+                        id="online_pay" 
+                    >
+                        <button 
+                            onclick="window.online_pay_click();return false;"
+                            style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width:300px;height:64px;padding:0 15px;display:block;"
+                        >
+                            Оплатить
+                        </button>
+                    </div>`)
+            } else {
+                // console.log('online_pay already has')
+            }
+            // открыть форму ввода реквизитов карты
+            $('a[href="#popupzero-mywindow"]')[0].click()
         }
 
         // кликнули на оплатить, проверка полей и редирект в чайхону
@@ -817,80 +931,72 @@ $(document).ready(function ()
                 })     
             })
 
-            let cardNumber = ud.getCookie( 'cardNumber' )
-            if (cardNumber) 
-                $(`#${tilda_form_id_online} input[name='Input']`).val(cardNumber);
+            $('#chaihona_pay').attr('processing','1')
 
-            let cardExpiries = ud.getCookie( 'cardExpiries' )
-            if (cardExpiries) 
-                $(`#${tilda_form_id_online} input[name='Input_2']`).val(cardExpiries);
+            $.ajax({
+                url: `${window.CHAIHONA_HOST}/tilda/make-order`,
+                type: 'POST',
+                crossDomain: true,
+                data: {
+                    phone: purePhone,
+                    name: ud.props.name,
+                    email: ud.props.email,
+                    persons: persons,
+                    city: ud.props.jsonAddress.city,
+                    street: ud.props.jsonAddress.street,
+                    house: ud.props.jsonAddress.house,
+                    flat: ud.props.flat,
+                    department: ud.props.department,
+                    total: total_price,
+                    payment: payment,
+                    delivery_time,
+                    lat: ud.props.jsonAddress.lat,
+                    lon: ud.props.jsonAddress.lon,
+                    coment: comment,
+                    fullAddress: ud.props.jsonAddress.fullAddress,
+                    brand: window.BRAND_CODE,
+                    dish: dishes
+                },
+                success: async (rawData) => {
+                    // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
+                    localStorage.setItem('order_info', JSON.stringify(rawData))
+                    console.log('make-order success: %s', JSON.stringify(rawData))
+                    if(payment == 'proekt-eda-online') {
+                        onlinePayFlow()                        
+                    }
+                    else
+                        window.location.href = `/success?order=${rawData.code}`
+                },
+                error: function(err){
+                    console.warn('make-order error: %s', JSON.stringify(err))
+                    $('#chaihona_pay').removeAttr('processing')
+                    showBottomError(err.responseJSON, 'js-rule-error-string');
+                }
+            })
+        }
 
-            // this.bindInput('Input', 'input', tilda_form_id_online) // cardNumber
-            // this.bindInput('Input_2', 'input', tilda_form_id_online) // cardDateExpiries
-    
-
-            if($(`#online_pay`).length == 0) {
-                console.log('try hide old online button and add self')
-                $(`div.tn-form__submit`).hide() // кнопка онлайн оплаты в попапе
-                $(`#${tilda_form_id_online} div.t-form__inputsbox`).append(`
-                    <div 
-                        id="online_pay" 
-                    >
-                        <button 
-                            onclick="window.online_pay_click();return false;"
-                            style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width:300px;height:64px;padding:0 15px;display:block;"
-                        >
-                            Оплатить
-                        </button>
-                    </div>`)
-            } else {
-                console.log('online_pay already has')
+        /**
+         * Подключаем скрипт для формирования платежной криптограммы
+         **/
+        function makeCryptogramCreationScript () {
+            if (scriptLoaded) return Promise.resolve()
+            else {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script')
+                    script.src = 'https://widget.cloudpayments.ru/bundles/checkout'
+                    script.async = true
+                    script.onload = () => {
+                        scriptLoaded = true
+                        console.log('скрипт cloudpayments успешно загружен')
+                        resolve()
+                    }
+                    script.onerror = () => {
+                        console.warn('не смог загрузить скрипт cloudpayments')
+                        reject()
+                    }
+                    document.head.appendChild(script)
+                })
             }
-    
-            $('a[href="#popupzero-mywindow"]')[0].click()
-
-            // $('#chaihona_pay').attr('processing','1')
-
-            // $.ajax({
-            //     url: `${window.CHAIHONA_HOST}/tilda/make-order`,
-            //     type: 'POST',
-            //     crossDomain: true,
-            //     data: {
-            //         phone: purePhone,
-            //         name: ud.props.name,
-            //         email: ud.props.email,
-            //         persons: persons,
-            //         city: ud.props.jsonAddress.city,
-            //         street: ud.props.jsonAddress.street,
-            //         house: ud.props.jsonAddress.house,
-            //         flat: ud.props.flat,
-            //         department: ud.props.department,
-            //         total: total_price,
-            //         payment: payment,
-            //         delivery_time,
-            //         lat: ud.props.jsonAddress.lat,
-            //         lon: ud.props.jsonAddress.lon,
-            //         coment: comment,
-            //         fullAddress: ud.props.jsonAddress.fullAddress,
-            //         brand: window.BRAND_CODE,
-            //         dish: dishes
-            //     },
-            //     success: function(rawData){
-            //         console.log('make-order success: %s', JSON.stringify(rawData))
-            //         if(payment == 'proekt-eda-online') {
-            //             // открыть форму ввода реквизитов карты
-            //             $('a[href="#popupzero-mywindow"]')[0].click()
-
-            //         }
-            //         else
-            //             window.location.href = `/success?order=${rawData.code}`
-            //     },
-            //     error: function(err){
-            //         console.warn('make-order error: %s', JSON.stringify(err))
-            //         $('#chaihona_pay').removeAttr('processing')
-            //         showBottomError(err.responseJSON, 'js-rule-error-string');
-            //     }
-            // })
         }
     }
 
