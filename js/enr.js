@@ -1,4 +1,4 @@
-window.script_version = 57
+window.script_version = 58
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -669,18 +669,13 @@ $(document).ready(function ()
                     expDateMonth: cardExpiries.substring(0, 2),
                     expDateYear: cardExpiries.substring(3, 5),
                     cvv: cardCVV,
-                    name: ''
+                    name: 'CARD HOLDER'
                 }
 
                 console.log('try createCryptogramPacket with %s', JSON.stringify(params))
 
-                try {
-                    const result = cryptogrammScript.createCryptogramPacket(params)
-                    console.log('createCryptogramPacket OK: %s', JSON.stringify(result))
-                } catch (error) {
-                    console.warn('createCryptogramPacket error: %s', error.message)
-                    throw error
-                }
+                const result = cryptogrammScript.createCryptogramPacket(params)
+                console.log('createCryptogramPacket OK: %s', JSON.stringify(result))
     
                 if (result.success) {
                     const ppParams = {
