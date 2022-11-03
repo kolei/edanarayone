@@ -1,4 +1,4 @@
-window.script_version = 55
+window.script_version = 56
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -663,7 +663,7 @@ $(document).ready(function ()
                 }
 
                 const cryptogrammScript = new cp.Checkout(orderJson.payParams.Login)
-                const cardCVV = $(`#${tilda_form_id_online} input[name='Input_3']`).val()
+                const cardCVV = $(`#${tilda_form_id_online} input[name='Input_4']`).val()
         
                 const params = {
                     cardNumber: cardNumber,
