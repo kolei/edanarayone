@@ -1,4 +1,4 @@
-window.script_version = 50
+window.script_version = 51
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -465,6 +465,7 @@ $(document).ready(function ()
                         localAddressInfo.lat, 
                         localAddressInfo.lon
                     ).then(res=>{
+                        console.log('try parse 1')
                         res = JSON.parse(res)
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
 
@@ -650,6 +651,7 @@ $(document).ready(function ()
                     console.log('Информация о заказе: %s', orderInfo)
                 }
 
+                console.log('try parse 2')
                 const orderJson = JSON.parse(orderInfo)
                 try {
                     await makeCryptogramCreationScript()
@@ -1264,6 +1266,7 @@ $(document).ready(function ()
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
 
         if(sessionStorage.getItem('goodAddressWithCoordinates')){
+            console.log('try parse 3')
             let goodAddressWithCoordinates = JSON.parse(sessionStorage.getItem('goodAddressWithCoordinates'))
 
             DEV_MODE && console.log('есть валидный адрес, не проверяю координаты: %s', 
@@ -1274,6 +1277,7 @@ $(document).ready(function ()
         }
 
         if(sessionStorage.getItem('badAddressWithCoordibates')){
+            console.log('try parse 4')
             let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem('badAddressWithCoordibates'))
             if(badAddressWithCoordibates.lat == coords.lat && badAddressWithCoordibates.lon==coords.lon){
                 // этот адрес уже проверяли - сразу выкидываем ошибку
@@ -1298,6 +1302,7 @@ $(document).ready(function ()
                 coords.lon
             ).then(res2=>{
                 // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
+                console.log('try parse 5')
                 res2 = JSON.parse(res2)
                 DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res2))
 
