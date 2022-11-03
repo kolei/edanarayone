@@ -1,4 +1,4 @@
-window.script_version = 48
+window.script_version = 49
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -642,12 +642,22 @@ $(document).ready(function ()
                 }
 
                 const orderInfo = localStorage.getItem('order_info')
-                if (orderInfo == null)
+                if (orderInfo == null) {
                     // потерял параметры платежа
+                    console.log('Потерял информацию о заказе')
                     throw new Error('Потерял информацию о заказе, попробуйте ещё раз не перезагружая страницу')
+                } else {
+                    console.log('Информация о заказе: %s', orderInfo)
+                }
 
                 const orderJson = JSON.parse(orderInfo)
-                await makeCryptogramCreationScript()
+                try {
+                    await makeCryptogramCreationScript()
+                    console.log('makeCryptogramCreationScript OK')
+                } catch (error) {
+                    console.log('makeCryptogramCreationScript error: %s', extractErrorMessage(error))
+                    throw error
+                }
 
                 const cryptogrammScript = new cp.Checkout(orderJson.payParams.Login)
                 const cardCVV = $(`#${tilda_form_id_online} input[name='Input_3']`).val()
@@ -961,7 +971,7 @@ $(document).ready(function ()
             }).done((rawData) => {
                 // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
                 localStorage.setItem('order_info', JSON.stringify(rawData))
-                console.log('make-order success: %s', JSON.stringify(rawData))
+                // console.log('make-order success: %s', JSON.stringify(rawData))
                 if(payment == 'proekt-eda-online') {
                     console.log('try online pay')
                     onlinePayFlow()                        
