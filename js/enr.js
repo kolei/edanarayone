@@ -1,4 +1,4 @@
-window.script_version = 44
+window.script_version = 45
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -931,6 +931,7 @@ $(document).ready(function ()
                 })     
             })
 
+            console.log('all OK, try make order')
             $('#chaihona_pay').attr('processing','1')
 
             $.ajax({
