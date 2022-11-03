@@ -1,4 +1,4 @@
-window.script_version = 54
+window.script_version = 55
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -651,7 +651,6 @@ $(document).ready(function ()
                     console.log('Информация о заказе: %s', orderInfo)
                 }
 
-                console.log('try parse 2')
                 const orderJson = JSON.parse(orderInfo)
                 try {
                     await makeCryptogramCreationScript()
@@ -676,7 +675,13 @@ $(document).ready(function ()
 
                 console.log('try createCryptogramPacket with %s', JSON.stringify(params))
 
-                const result = cryptogrammScript.createCryptogramPacket(params)
+                try {
+                    const result = cryptogrammScript.createCryptogramPacket(params)
+                    console.log('createCryptogramPacket OK')
+                } catch (error) {
+                    console.warn('createCryptogramPacket error: %s', error.message)
+                    throw error
+                }
 
                 console.log('createCryptogramPacket result = %s', JSON.stringify(result))
     
