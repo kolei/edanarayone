@@ -1,4 +1,4 @@
-window.script_version = 47
+window.script_version = 48
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -963,16 +963,17 @@ $(document).ready(function ()
                 localStorage.setItem('order_info', JSON.stringify(rawData))
                 console.log('make-order success: %s', JSON.stringify(rawData))
                 if(payment == 'proekt-eda-online') {
+                    console.log('try online pay')
                     onlinePayFlow()                        
                 }
-                else
+                else {
+                    console.log('offline pay')
                     window.location.href = `/success?order=${rawData.code}`
+                }
             }).fail(err => {
                 console.warn('make-order error: %s', JSON.stringify(err))
                 $('#chaihona_pay').removeAttr('processing')
                 showBottomError(err.responseJSON, 'js-rule-error-string');
-            }).always(()=>{
-                console.log('ajax always')
             })
         }
 
@@ -1489,23 +1490,24 @@ $(document).ready(function ()
                     work_time = data.work_time ? data.work_time : '11:00-05:00'
 
                     if(data.week_days){ 
-                        setDeliveryTimeByWeek(data.week_days, parseInt(data.delivery_time));
+                        setDeliveryTimeByWeek(data.week_days, parseInt(data.delivery_time))
 
                         // показываю СВОЮ кнопку "оплатить"
-                        chaihona_pay.attr('allow_pay', 'true');
+                        chaihona_pay.attr('allow_pay', 'true')
 
                         if(!data.online_payment){
-                            $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true);
-                            $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true);
+                            $(`#${tilda_form_id} input[name='paymentsystem'][value='cash']`).prop('checked', true)
+                            // TODO вернуть
+                            // $(`#${tilda_form_id} input[name='paymentsystem'][value='cloudpayments']`).attr("disabled",true)
                         
-                            showBottomError('Обслуживающий ресторан не поддерживает онлайн-оплату', 'js-rule-error-string');
+                            showBottomError('Обслуживающий ресторан не поддерживает онлайн-оплату', 'js-rule-error-string')
 
-                            $('#chaihona_pay button').text('Оформить');
+                            $('#chaihona_pay button').text('Оформить')
                         }
-                        ud.props.department = data.department;
+                        ud.props.department = data.department
                     }
                     else{
-                        showBottomError('В ответе сервера нет времени работы ресторана', 'js-rule-error-string');
+                        showBottomError('В ответе сервера нет времени работы ресторана', 'js-rule-error-string')
                     }
                 }
             });
