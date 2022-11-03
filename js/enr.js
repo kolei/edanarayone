@@ -656,8 +656,7 @@ $(document).ready(function ()
                     await makeCryptogramCreationScript()
                     console.log('makeCryptogramCreationScript OK')
                 } catch (error) {
-                    console.log('makeCryptogramCreationScript error: %s (%s)', 
-                        extractErrorMessage(error),
+                    console.log('makeCryptogramCreationScript error: %s', 
                         error.message)
                     throw error
                 }
@@ -714,7 +713,7 @@ $(document).ready(function ()
                             window.location.href = `/success?order=${orderJson.code}`
                         }
                     } catch (error) {
-                        console.warn('paymentProcess error: %s', extractErrorMessage(error))
+                        console.warn('paymentProcess error: %s', error.message)
                         throw error
                     }
                 } else {
@@ -722,25 +721,10 @@ $(document).ready(function ()
                     throw new Error(JSON.stringify(result))
                 }
             } catch (error) {
-                window.location.href = `/paymenterror?message=${extractErrorMessage(error)}`
+                window.location.href = `/paymenterror?message=${error.message}`
             }
         }
 
-        function extractErrorMessage (error) {
-            if (typeof error === 'object') {
-              if (typeof error.data === 'object') {
-                if (typeof error.data.message === 'string') {
-                  return error.data.message
-                }
-              } else {
-                console.log('[extractErrorMessage] typeof error.data = "%s"', typeof error.data)
-              }
-            } else {
-              console.log('[extractErrorMessage] typeof error = "%s"', typeof error)
-            }
-            return JSON.stringify(error)
-        }
-          
         function onlinePayFlow(){
             console.log('try onlinePayFlow...')
             let cardNumber = ud.getCookie( 'cardNumber' )
