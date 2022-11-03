@@ -1,4 +1,4 @@
-window.script_version = 56
+window.script_version = 57
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -465,7 +465,7 @@ $(document).ready(function ()
                         localAddressInfo.lat, 
                         localAddressInfo.lon
                     ).then(res=>{
-                        console.log('try parse 1')
+                        // console.log('try parse 1')
                         res = JSON.parse(res)
                         DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res))
 
@@ -677,13 +677,11 @@ $(document).ready(function ()
 
                 try {
                     const result = cryptogrammScript.createCryptogramPacket(params)
-                    console.log('createCryptogramPacket OK')
+                    console.log('createCryptogramPacket OK: %s', JSON.stringify(result))
                 } catch (error) {
                     console.warn('createCryptogramPacket error: %s', error.message)
                     throw error
                 }
-
-                console.log('createCryptogramPacket result = %s', JSON.stringify(result))
     
                 if (result.success) {
                     const ppParams = {
@@ -1273,7 +1271,7 @@ $(document).ready(function ()
         DEV_MODE && console.log('geocodeLocalCoordinates: %s', JSON.stringify(coords))
 
         if(sessionStorage.getItem('goodAddressWithCoordinates')){
-            console.log('try parse 3')
+            // console.log('try parse 3')
             let goodAddressWithCoordinates = JSON.parse(sessionStorage.getItem('goodAddressWithCoordinates'))
 
             DEV_MODE && console.log('есть валидный адрес, не проверяю координаты: %s', 
@@ -1284,7 +1282,7 @@ $(document).ready(function ()
         }
 
         if(sessionStorage.getItem('badAddressWithCoordibates')){
-            console.log('try parse 4')
+            // console.log('try parse 4')
             let badAddressWithCoordibates = JSON.parse(sessionStorage.getItem('badAddressWithCoordibates'))
             if(badAddressWithCoordibates.lat == coords.lat && badAddressWithCoordibates.lon==coords.lon){
                 // этот адрес уже проверяли - сразу выкидываем ошибку
