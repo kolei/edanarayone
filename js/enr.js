@@ -1,4 +1,4 @@
-window.script_version = 52
+window.script_version = 53
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -991,19 +991,21 @@ $(document).ready(function ()
             })
         }
 
+        windows.scriptLoaded = false
+
         /**
          * Подключаем скрипт для формирования платежной криптограммы
          **/
         function makeCryptogramCreationScript () {
             console.log('try makeCryptogramCreationScript...')
-            if (scriptLoaded) return Promise.resolve()
+            if (windows.scriptLoaded) return Promise.resolve()
             else {
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
                     script.src = 'https://widget.cloudpayments.ru/bundles/checkout'
                     script.async = true
                     script.onload = () => {
-                        scriptLoaded = true
+                        windows.scriptLoaded = true
                         console.log('скрипт cloudpayments успешно загружен')
                         resolve()
                     }
