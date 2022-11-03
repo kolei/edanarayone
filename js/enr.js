@@ -1,4 +1,4 @@
-window.script_version = 45
+window.script_version = 46
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -957,22 +957,22 @@ $(document).ready(function ()
                     fullAddress: ud.props.jsonAddress.fullAddress,
                     brand: window.BRAND_CODE,
                     dish: dishes
-                },
-                success: async (rawData) => {
-                    // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
-                    localStorage.setItem('order_info', JSON.stringify(rawData))
-                    console.log('make-order success: %s', JSON.stringify(rawData))
-                    if(payment == 'proekt-eda-online') {
-                        onlinePayFlow()                        
-                    }
-                    else
-                        window.location.href = `/success?order=${rawData.code}`
-                },
-                error: function(err){
-                    console.warn('make-order error: %s', JSON.stringify(err))
-                    $('#chaihona_pay').removeAttr('processing')
-                    showBottomError(err.responseJSON, 'js-rule-error-string');
                 }
+            }).done(async (rawData) => {
+                // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
+                localStorage.setItem('order_info', JSON.stringify(rawData))
+                console.log('make-order success: %s', JSON.stringify(rawData))
+                if(payment == 'proekt-eda-online') {
+                    onlinePayFlow()                        
+                }
+                else
+                    window.location.href = `/success?order=${rawData.code}`
+            }).fail(err => {
+                console.warn('make-order error: %s', JSON.stringify(err))
+                $('#chaihona_pay').removeAttr('processing')
+                showBottomError(err.responseJSON, 'js-rule-error-string');
+            }).always(()=>{
+                console.log('ajax always')
             })
         }
 
