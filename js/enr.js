@@ -1,4 +1,4 @@
-window.script_version = 46
+window.script_version = 47
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -958,7 +958,7 @@ $(document).ready(function ()
                     brand: window.BRAND_CODE,
                     dish: dishes
                 }
-            }).done(async (rawData) => {
+            }).done((rawData) => {
                 // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
                 localStorage.setItem('order_info', JSON.stringify(rawData))
                 console.log('make-order success: %s', JSON.stringify(rawData))
