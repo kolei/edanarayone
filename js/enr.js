@@ -1,4 +1,4 @@
-window.script_version = 49
+window.script_version = 50
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -655,7 +655,9 @@ $(document).ready(function ()
                     await makeCryptogramCreationScript()
                     console.log('makeCryptogramCreationScript OK')
                 } catch (error) {
-                    console.log('makeCryptogramCreationScript error: %s', extractErrorMessage(error))
+                    console.log('makeCryptogramCreationScript error: %s (%s)', 
+                        extractErrorMessage(error),
+                        error.message)
                     throw error
                 }
 
@@ -991,6 +993,7 @@ $(document).ready(function ()
          * Подключаем скрипт для формирования платежной криптограммы
          **/
         function makeCryptogramCreationScript () {
+            console.log('try makeCryptogramCreationScript...')
             if (scriptLoaded) return Promise.resolve()
             else {
                 return new Promise((resolve, reject) => {
