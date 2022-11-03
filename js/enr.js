@@ -1,4 +1,4 @@
-window.script_version = 58
+window.script_version = 59
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -684,9 +684,13 @@ $(document).ready(function ()
                         orderId: orderJson.id
                     }
                     console.log('createCryptogramPacket success, try paymentAttempt with %s', JSON.stringify(ppParams))
-                    try {
+                    $.ajax({
+                        url: `${window.CHAIHONA_HOST}/payment`,
+                        type: 'POST',
+                        crossDomain: true,
+                        data: ppParams
+                    }).done(ppRes => {
                         // ppRes => {"PaReq":"...", "MD": 111, "AscUrl":""}
-                        const ppRes = await api.paymentProcess(ppParams)
                         console.log('paymentProcess result: %s', JSON.stringify(ppRes))
                         if (typeof ppRes.AcsUrl === 'string') {
                             // console.log('try 3ds auth %s, apiUrl=%s, orderId=%s, cartToken=%s',
@@ -707,10 +711,10 @@ $(document).ready(function ()
                             console.log('Онлайн оплата успешно проведена')
                             window.location.href = `/success?order=${orderJson.code}`
                         }
-                    } catch (error) {
-                        console.warn('paymentProcess error: %s', error.message)
-                        throw error
-                    }
+                    }).fail(err=>{
+                        console.warn('paymentProcess error: %s', err.message)
+                        window.location.href = `/paymenterror?message=${err.message}`
+                    })
                 } else {
                     // TODO не реализовано
                     throw new Error(JSON.stringify(result))
