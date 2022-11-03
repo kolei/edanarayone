@@ -1,4 +1,4 @@
-window.script_version = 51
+window.script_version = 52
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -1302,8 +1302,8 @@ $(document).ready(function ()
                 coords.lon
             ).then(res2=>{
                 // {"error": "Обслуживающий ресторан найден (100000097), но в нем не поддерживается доставка"}
-                console.log('try parse 5')
-                res2 = JSON.parse(res2)
+                console.log('try parse 5: %s', JSON.stringify(res2))
+                // res2 = JSON.parse(res2)
                 DEV_MODE && console.log('checkLocalAddress: %s', JSON.stringify(res2))
 
                 if(typeof res2.error != 'undefined'){
