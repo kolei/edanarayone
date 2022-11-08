@@ -1,4 +1,4 @@
-window.script_version = 63
+window.script_version = 64
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -694,21 +694,17 @@ $(document).ready(function ()
                     }).done(ppRes => {
                         // ppRes => {"PaReq":"...", "MD": 111, "AscUrl":""}
                         console.log('paymentProcess result: %s', JSON.stringify(ppRes))
-                        if (typeof ppRes.AcsUrl === 'string') {
-                            // console.log('try 3ds auth %s, apiUrl=%s, orderId=%s, cartToken=%s',
-                            // ppRes.AcsUrl, apiUrl.value, orderProcess.code, cartToken.value)
+                        if (typeof ppRes.AcsUrl == 'string') {
+                            console.log('try 3ds auth...')
                             // // https://developers.cloudpayments.ru/#obrabotka-3-d-secure
-                            // const paymentProcessUrl = `${apiUrl.value}/3ds-confirm/ch1/${orderProcess.code}/${cartToken.value}`
+                            const paymentProcessUrl = `${apiUrl.value}/3ds-confirm/enr/${orderJson.code}/${orderJson.cartToken}`
         
-                            // console.log('требуется 3DS аутентификация, callback url = %s', paymentProcessUrl)
-                            // formPostRequest(ppRes.AcsUrl, {
-                            // PaReq: ppRes.PaReq,
-                            // MD: ppRes.MD,
-                            // TermUrl: paymentProcessUrl
-                            // })
-                            // // не прекращаю крутить
-                            // loadingAfterPay = true
-                            // // TODO перейти на окно ожидания оплаты и либо вебхуком, либо опросом получать статус из апи
+                            console.log('требуется 3DS аутентификация, callback url = %s', paymentProcessUrl)
+                            formPostRequest(ppRes.AcsUrl, {
+                                PaReq: ppRes.PaReq,
+                                MD: ppRes.MD,
+                                TermUrl: paymentProcessUrl
+                            })
                         } else {
                             console.log('Онлайн оплата успешно проведена')
                             window.location.href = `/success?order=${orderJson.code}`
@@ -726,6 +722,24 @@ $(document).ready(function ()
             }
         }
 
+        function formPostRequest (action, fields) {
+            const form = document.createElement('form')
+      
+            form.action = action
+            form.method = 'POST'
+
+            Object.keys(fields).map(field => {
+              const input = document.createElement('input')
+      
+              input.setAttribute('name', field)
+              input.setAttribute('value', fields[field])
+              form.appendChild(input)
+            })
+            document.body.appendChild(form)
+            form.submit()
+            document.body.removeChild(form)
+        }
+      
         function onlinePayFlow(){
             console.log('try onlinePayFlow...')
             let cardNumber = ud.getCookie( 'cardNumber' )
