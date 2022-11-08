@@ -1,4 +1,4 @@
-window.script_version = 66
+window.script_version = 67
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -978,7 +978,7 @@ $(document).ready(function ()
                 // {"cartToken":"токен корзины мапи","code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
                 localStorage.setItem('order_info', JSON.stringify(rawData))
                 // console.log('make-order success: %s', JSON.stringify(rawData))
-                if(payment == 'proekt-eda-online') {
+                if(payment == '100eda-onlajn-oplata') {
                     console.log('try online pay')
                     onlinePayFlow()                        
                 }
