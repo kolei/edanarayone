@@ -1,4 +1,4 @@
-window.script_version = 65
+window.script_version = 66
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -859,14 +859,14 @@ $(document).ready(function ()
             // let payment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
 
             let tildaPayment = $(`#${tilda_form_id} input[name='paymentsystem']:checked`).val()
-            let payment = 'proekt-eda-rubli'
+            let payment = '100eda-nalicnye'
 
             switch (tildaPayment) {
                 case 'cloudpayments':
-                    payment = 'proekt-eda-online'
+                    payment = '100eda-onlajn-oplata'
                     break;
                 case 'banktransfer':
-                    payment = 'proekt-eda-karty'
+                    payment = '100eda-kartoj-kureru'
                     break;
             }
 
