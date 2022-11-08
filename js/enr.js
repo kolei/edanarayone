@@ -1,4 +1,4 @@
-window.script_version = 62
+window.script_version = 63
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -682,7 +682,8 @@ $(document).ready(function ()
                         name: '',
                         cardCryptogramPacket: result.packet,
                         orderId: orderJson.id,
-                        cartToken: orderJson.cartToken
+                        cartToken: orderJson.cartToken,
+                        orderCode: orderJson.code
                     }
                     console.log('createCryptogramPacket success, try paymentAttempt with %s', JSON.stringify(ppParams))
                     $.ajax({
