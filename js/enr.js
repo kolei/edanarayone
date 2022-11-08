@@ -1,4 +1,4 @@
-window.script_version = 61
+window.script_version = 62
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -681,15 +681,13 @@ $(document).ready(function ()
                     const ppParams = {
                         name: '',
                         cardCryptogramPacket: result.packet,
-                        orderId: orderJson.id
+                        orderId: orderJson.id,
+                        cartToken: orderJson.cartToken
                     }
                     console.log('createCryptogramPacket success, try paymentAttempt with %s', JSON.stringify(ppParams))
                     $.ajax({
                         url: `${window.CHAIHONA_HOST}/payment`,
                         type: 'POST',
-                        headers: {
-                            cartToken: orderJson.cartToken
-                        },
                         crossDomain: true,
                         data: ppParams
                     }).done(ppRes => {
