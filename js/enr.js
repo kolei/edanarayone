@@ -1,4 +1,4 @@
-window.script_version = 64
+window.script_version = 65
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -697,7 +697,7 @@ $(document).ready(function ()
                         if (typeof ppRes.AcsUrl == 'string') {
                             console.log('try 3ds auth...')
                             // // https://developers.cloudpayments.ru/#obrabotka-3-d-secure
-                            const paymentProcessUrl = `${apiUrl.value}/3ds-confirm/enr/${orderJson.code}/${orderJson.cartToken}`
+                            const paymentProcessUrl = `${window.CHAIHONA_HOST}/3ds-confirm/enr/${orderJson.code}/${orderJson.cartToken}`
         
                             console.log('требуется 3DS аутентификация, callback url = %s', paymentProcessUrl)
                             formPostRequest(ppRes.AcsUrl, {
