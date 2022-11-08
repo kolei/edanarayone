@@ -1,4 +1,4 @@
-window.script_version = 60
+window.script_version = 61
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -687,6 +687,9 @@ $(document).ready(function ()
                     $.ajax({
                         url: `${window.CHAIHONA_HOST}/payment`,
                         type: 'POST',
+                        headers: {
+                            cartToken: orderJson.cartToken
+                        },
                         crossDomain: true,
                         data: ppParams
                     }).done(ppRes => {
@@ -711,8 +714,8 @@ $(document).ready(function ()
                             console.log('Онлайн оплата успешно проведена')
                             window.location.href = `/success?order=${orderJson.code}`
                         }
-                    }).fail(err=>{
-                        console.warn('paymentProcess error: %s', err.message)
+                    }).fail((err) => {
+                        console.warn('paymentProcess error: %s (%s)', err.message, JSON.stringify(err))
                         window.location.href = `/paymenterror?message=${err.message}`
                     })
                 } else {
@@ -959,7 +962,7 @@ $(document).ready(function ()
                     dish: dishes
                 }
             }).done((rawData) => {
-                // {"code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
+                // {"cartToken":"токен корзины мапи","code":"1455642","id":"1095048","type":16,"payParams":{"Login":""}}
                 localStorage.setItem('order_info', JSON.stringify(rawData))
                 // console.log('make-order success: %s', JSON.stringify(rawData))
                 if(payment == 'proekt-eda-online') {
