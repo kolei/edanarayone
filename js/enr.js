@@ -1,4 +1,4 @@
-window.script_version = 59
+window.script_version = 60
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -310,8 +310,8 @@ $(document).ready(function ()
     if( window.location.hostname.includes('xn--100-8cdjmfb4eicin5a1d.xn--p1ai')) //100процентоведа.рф
     {
         // отдельный проект, свой id формы
-        window.CHAIHONA_HOST = 'https://api.dev.chaihona1.ru/api/v1'
-        // window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
+        // window.CHAIHONA_HOST = 'https://api.dev.chaihona1.ru/api/v1'
+        window.CHAIHONA_HOST = 'https://api.kei.chaihona1.ru/api/v1'
         // DEV_MODE = false // !!
     }
     else {
