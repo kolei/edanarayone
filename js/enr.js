@@ -1,4 +1,4 @@
-window.script_version = 68
+window.script_version = 69
 var tilda_form_id = 'form347659861'
 var tilda_form_id_online = 'form503737177'
 var DEV_MODE = true
@@ -759,7 +759,7 @@ $(document).ready(function ()
                     >
                         <button 
                             onclick="window.online_pay_click();return false;"
-                            style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width:300px;height:64px;padding:0 15px;display:block;"
+                            style="color:#fff;background-color:#181f29;border-radius:8px;font-weight:600;font-size:16px;width: calc(100% - 32px);height:64px;padding:0 15px;display:block;"
                         >
                             Оплатить
                         </button>
